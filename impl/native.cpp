@@ -9,13 +9,13 @@ void upgun::Game::FreeMemory(void* Address)
 
 const std::wstring upgun::ue4::FName::ToString(void)
 {
-	Game::FString out;
+	ue4::FString out;
 
 	const void* FNameToString = Game::GetSingleton().get_fnametostring_ptr();
 
 	if (!FNameToString) return std::wstring();
 
-	const Game::FString* temp = reinterpret_cast<Game::FString * (__fastcall*)(FName*, Game::FString*)>(FNameToString)(this, &out);
+	const ue4::FString* temp = reinterpret_cast<ue4::FString * (__fastcall*)(FName*, ue4::FString*)>(FNameToString)(this, &out);
 	if (!temp) return std::wstring();
 
 	const std::wstring result = out.ToString();

@@ -4,6 +4,7 @@
 #include <iostream>
 #include "types.h"
 #include "ue4.h"
+#include <functional>
 
 namespace upgun {
 	namespace patterns {
@@ -94,10 +95,10 @@ namespace upgun {
 				return Game::GetSingleton().GetObjectsPtr()->NumElements;
 			}
 
-			static const UObject GetElement(int32 Index);
+			static UObject GetElement(int32 Index);
+
+			static UObject find(std::function<bool(UObject&)> pred);
 		};
-
-
 
 		const void* get_fnametostring_ptr() { return this->m_FNameToString; };
 		const void* get_engine_ptr() { return this->m_GameEngine; };

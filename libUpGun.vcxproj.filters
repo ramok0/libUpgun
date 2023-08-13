@@ -21,9 +21,6 @@
     <ClCompile Include="include\libupgun.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\structures.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>

@@ -26,13 +26,29 @@ const std::wstring upgun::Game::UObject::get_full_name(void)
 	return out;
 }
 
-const upgun::Game::UObject upgun::Game::ObjectArray::GetElement(int32 Index)
+upgun::Game::UObject upgun::Game::ObjectArray::GetElement(int32 Index)
 {
 	const upgun::ue4::TUObjectArray* Array = Game::GetSingleton().GetObjectsPtr();
 
 	upgun::ue4::FUObjectItem* Item = const_cast<upgun::ue4::TUObjectArray*>(Array)->GetObjectPtr(Index);
 	if (Item && Item->Object) {
 		return UObject((uintptr)Item->Object);
+	}
+
+	return UObject(0);
+}
+
+upgun::Game::UObject upgun::Game::ObjectArray::find(std::function<bool(UObject&)> pred)
+{
+	for (int i = 0; i < Game::ObjectArray::Num(); i++)
+	{
+		upgun::Game::UObject element = Game::ObjectArray::GetElement(i);
+		if (!element) continue;
+
+		if (pred(element))
+		{
+			return element;
+		}
 	}
 
 	return UObject(0);
