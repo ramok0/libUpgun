@@ -4,6 +4,7 @@
 
 namespace upgun {
 	namespace ue4 {
+		//https://docs.unrealengine.com/4.26/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/StringHandling/FName/
 		struct FName {
 			__int32 ComparisonIndex;
 			__int32 Number;
@@ -11,6 +12,7 @@ namespace upgun {
 			const std::wstring ToString(void);
 		};
 
+		//https://docs.unrealengine.com/4.27/en-US/API/Runtime/CoreUObject/UObject/UObjectBase/
 		struct UObject {
 			void** VTable;
 			int32 ObjectFlags;
@@ -20,6 +22,7 @@ namespace upgun {
 			UObject* OuterPrivate;
 		};
 
+		//https://docs.unrealengine.com/4.26/en-US/API/Runtime/CoreUObject/UObject/FUObjectItem/
 		struct FUObjectItem {
 			UObject* Object;
 			// Internal flags
@@ -30,6 +33,7 @@ namespace upgun {
 			int32_t SerialNumber;
 		};
 
+		//https://docs.unrealengine.com/4.26/en-US/API/Runtime/CoreUObject/UObject/FChunkedFixedUObjectArray/
 		struct TUObjectArray {
 			enum
 			{
@@ -52,6 +56,7 @@ namespace upgun {
 			ue4::FUObjectItem* GetObjectPtr(int32 Index);
 		};
 	
+		//https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/TArrays/
 		template <typename T>
 		struct TArray {
 			T* Data;
