@@ -1,5 +1,6 @@
 #pragma once
 #include <stdexcept>
+#include "types.h"
 
 #define MISSING_IMPL throw std::runtime_error("This function is not implemented");
 
@@ -20,6 +21,33 @@ namespace upgun {
 			
 			this->find_patterns();
 		}
+
+		void FreeMemory(void* Address);
+
+		struct FName {
+			__int32 ComparisonIndex;
+			__int32 Number;
+
+			std::wstring ToString(void);
+		};
+
+		template <typename T>
+		struct TArray {
+			T* Data;
+			int32 Count;
+			int32 Max;
+		};
+
+		struct FString : TArray<wchar_t> {
+		public:
+			//default constructor for nullallocated FString
+			FString() {
+				this->Data = nullptr;
+				this->Count = this->Max = 0;
+			}
+
+			std::wstring ToString(void);
+		};
 
 	private:
 		//find addresses for objects, fnametostr, free and engine, throw if it fails
