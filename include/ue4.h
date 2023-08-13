@@ -6,6 +6,7 @@ namespace upgun {
 	struct UClass;
 
 	namespace ue4 {
+
 		//https://docs.unrealengine.com/4.26/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/StringHandling/FName/
 		struct FName {
 			__int32 ComparisonIndex;
@@ -81,6 +82,16 @@ namespace upgun {
 				this->Count = this->Max = 0;
 			}
 
+			FString(const wchar_t* other)
+			{
+				Max = Count = *other ? std::wcslen(other) + 1 : 0;
+
+				if (Count)
+				{
+					Data = const_cast<wchar_t*>(other);
+				}
+			}
+
 			const std::wstring ToString(void);
 		};
 
@@ -110,6 +121,19 @@ namespace upgun {
 		struct FProperty : FField {
 			char pad_1[0x14];
 			uint16 Offset;
+		};
+
+		struct UKismetRenderingLibrary_ImportFileAsTexture2D_Params
+		{
+			UObject* WorldContextObject;
+			FString Filename;
+			UObject* ReturnValue;
+		};
+
+		struct KismetRenderingLibrary {
+			struct UTexture2D* ImportFileAsTexture2D(struct UObject* WorldContextObject, struct FString Filename);
+
+			static UClass* StaticClass();
 		};
 
 		static_assert(offsetof(UStruct, ChildProperties) == 0x50);
