@@ -23,3 +23,13 @@ upgun::UClass* upgun::ue4::UStruct::StaticClass()
 
 		return &staticClass;
 }
+
+upgun::UClass* upgun::ue4::KismetRenderingLibrary::StaticClass()
+{
+	static upgun::UClass staticClass = Game::GetSingleton().GetObjects().find([](upgun::UObject& object)
+		{
+			return object.get_full_name() == L"Class /Script/Engine.KismetRenderingLibrary";
+		}).Cast<upgun::UClass>();
+
+		return &staticClass;
+}
