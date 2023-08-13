@@ -64,6 +64,13 @@ namespace upgun {
 			T* Data;
 			int32 Count;
 			int32 Max;
+
+			T operator[](int32 Index)
+			{
+				if (Index >= Count) return T(0);
+
+				return Data[Index];
+			}
 		};
 
 		struct FString : TArray<wchar_t> {
