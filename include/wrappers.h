@@ -39,6 +39,8 @@ namespace upgun {
 
 	struct UObject : public GameObject<ue4::UObject> {
 	public:
+		UObject() : GameObject(0) { };
+
 		UObject(uintptr address) : GameObject(address) { };
 
 		UObject get_class_private() {
@@ -64,9 +66,7 @@ namespace upgun {
 			return T(this->get_address());
 		}
 
-		void ProcessEvent(UObject Function, void* params) {
-			return Game::GetSingleton().ProcessEvent(*this, Function, params);
-		}
+		void ProcessEvent(UObject Function, void* params);
 
 		const std::wstring get_name(void);
 		const std::wstring get_full_name(void);

@@ -30,6 +30,11 @@ bool upgun::UObject::IsAInternal(UClass* ClassPrivate)
 	return (UClass*)this->get_class_private().get_address() == ClassPrivate;
 }
 
+void upgun::UObject::ProcessEvent(UObject Function, void* params)
+{
+	return Game::GetSingleton().ProcessEvent(*this, Function, params);
+}
+
 const std::wstring upgun::UObject::get_name(void)
 {
 	ue4::FName name = this->get_data().NamePrivate;
