@@ -11,7 +11,7 @@ namespace upgun {
 	public:
 		GameObject(uintptr address) {
 			this->m_address = address;
-			if (address)
+			if (address && !IsBadReadPtr((const void*)address, sizeof(T)))
 			{
 				this->data = *reinterpret_cast<T*>(this->get_address());
 			}
@@ -78,6 +78,10 @@ namespace upgun {
 			return reinterpret_cast<upgun::ue4::UStruct*>(this->get_address());
 		}
 
+		UClass get_super_struct() {
+			return get_raw_pointer()->SuperStruct ? UClass((uintptr)get_raw_pointer()->SuperStruct) : UClass(0);
+		}
+
 		uint16 get_offset(const std::wstring PropertyName);
 
 		static UClass* StaticClass();
@@ -111,6 +115,7 @@ namespace upgun {
 
 		UObject GetElement(int32 Index);
 
+		UObject find(const std::wstring objectName, bool bExact = false);
 		UObject find(std::function<bool(UObject&)> pred);
 		std::vector<UObject> find_all(std::function<bool(UObject&)> pred);
 
@@ -126,6 +131,43 @@ namespace upgun {
 	public:
 		ReflectedObject(uintptr address) : UObject(address) { };
 
-		uint16 GetOffset(const std::wstring ClassName, const std::wstring PropertyName);
+		uint16 GetOffset(const std::wstring PropertyName);
+
+		ReflectedObject Get(const wchar_t* PropertyName)
+		{
+			if (*this) {
+				uint16 Offset = this->GetOffset(PropertyName);
+				uintptr Base = this->get_address();
+
+				if (!Offset) {
+					return ReflectedObject(0);
+				}
+				void* Address = *(void**)(Base + Offset);
+
+				return ReflectedObject((uintptr)Address);
+			}
+
+			return ReflectedObject(0);
+		}
+
+		template <typename T>
+		T GetAs(const wchar_t* PropertyName)
+		{
+			if (*this) {
+				uint16 Offset = this->GetOffset(PropertyName);
+				uintptr Base = this->get_address();
+
+				if (!Offset) {
+					return T(0);
+				}
+				T* Address = (T*)(Base + Offset);
+
+				std::cout << "0x" << Base << " + " << "0x" << Offset << " = " << Address << std::endl;
+
+				return *Address;
+			}
+
+			return T(0);
+		}
 	};
 }

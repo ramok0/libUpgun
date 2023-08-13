@@ -67,6 +67,18 @@ upgun::UObject upgun::ObjectArray::GetElement(int32 Index)
 	return UObject(0);
 }
 
+upgun::UObject upgun::ObjectArray::find(const std::wstring objectName, bool bExact)
+{
+	return this->find([&objectName, bExact](upgun::UObject& obj) {
+		if (bExact) {
+			return obj.get_full_name() == objectName;
+		}
+		else {
+			return obj.get_full_name().contains(objectName);
+		}
+		});
+}
+
 upgun::UObject upgun::ObjectArray::find(std::function<bool(UObject&)> pred)
 {
 	upgun::ue4::TUObjectArray* Array = GetArray();
