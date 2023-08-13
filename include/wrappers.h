@@ -64,6 +64,10 @@ namespace upgun {
 			return T(this->get_address());
 		}
 
+		void ProcessEvent(UObject Function, void* params) {
+			return Game::GetSingleton().ProcessEvent(*this, Function, params);
+		}
+
 		const std::wstring get_name(void);
 		const std::wstring get_full_name(void);
 	};
