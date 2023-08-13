@@ -1,8 +1,8 @@
 #pragma once
+#include <Windows.h>
 #include <stdexcept>
 #include "types.h"
-
-#define MISSING_IMPL throw std::runtime_error("This function is not implemented");
+#include "ue4.h"
 
 namespace upgun {
 	namespace patterns {
@@ -13,22 +13,83 @@ namespace upgun {
 	}
 
 	class Game {
+	protected:
+		const struct upgun::ue4::TUObjectArray* GetObjectsPtr();
+
+	public:
 		Game() : 
 			m_Objects(nullptr),
 			m_FNameToString(nullptr),
 			m_Free(nullptr),
-			m_Engine(nullptr) {
+			m_GameEngine(nullptr) {
 			
+			this->m_baseAddress = (uintptr)GetModuleHandleA(0);
+
 			this->find_patterns();
+		}
+
+		static Game GetSingleton()
+		{
+			static Game instance;
+			return instance;
 		}
 
 		void FreeMemory(void* Address);
 
-		struct FName {
-			__int32 ComparisonIndex;
-			__int32 Number;
+		template <typename T>
+		struct GameObject {
+		public:
+			GameObject(uintptr address) {
+				this->m_address = address;
+				if (!address)
+					throw std::runtime_error("Tried to read nullptr");
+				this->data = *reinterpret_cast<T*>(this->get_address());
+			}
 
-			std::wstring ToString(void);
+			const uintptr get_address() { return this->m_address; };
+			
+			const T get_data() { return this->data; };
+
+			operator bool() {
+				return this->get_address() != 0;
+			}
+
+		private:
+			uintptr m_address;
+			T data;
+		};
+
+		struct UObject : public GameObject<ue4::UObject> {
+		public :
+			UObject(uintptr address) : GameObject(address) { };
+			
+			const UObject get_class_private() {
+				return UObject((uintptr)this->get_data().ClassPrivate);
+			}		
+			
+			const UObject get_outer_private() {
+				return UObject((uintptr)this->get_data().OuterPrivate);
+			}
+
+			const std::wstring get_name(void);
+		};
+
+		struct FUObjectItem : public GameObject<ue4::FUObjectItem> {
+		public:
+			FUObjectItem(uintptr address) : GameObject(address) {};
+
+			const UObject get_object() {
+				return UObject((uintptr)this->get_data().Object);
+			}
+		};
+
+		struct ObjectArray {
+		public:
+			static const int32 Num() {
+				return Game::GetSingleton().GetObjectsPtr()->NumElements;
+			}
+
+			static const UObject GetElement(int32 Index);
 		};
 
 		template <typename T>
@@ -46,8 +107,11 @@ namespace upgun {
 				this->Count = this->Max = 0;
 			}
 
-			std::wstring ToString(void);
+			const std::wstring ToString(void);
 		};
+
+		const void* get_fnametostring_ptr() { return this->m_FNameToString; };
+		const void* get_engine_ptr() { return this->m_GameEngine; };
 
 	private:
 		//find addresses for objects, fnametostr, free and engine, throw if it fails
@@ -56,6 +120,7 @@ namespace upgun {
 		void* m_Objects;
 		void* m_FNameToString;
 		void* m_Free;
-		void* m_Engine;
+		void* m_GameEngine;
+		uintptr m_baseAddress;
 	};
 }
