@@ -3,8 +3,7 @@
 #include <stdexcept>
 #include <iostream>
 #include "types.h"
-#include "ue4.h"
-#include <functional>
+#include "wrappers.h"
 
 namespace upgun {
 	namespace patterns {
@@ -13,94 +12,6 @@ namespace upgun {
 		constexpr const char* FREE = "48 85 C9 74 2E 53 48 83 EC 20 48 8B D9 48 8B 0D ? ? ? ? 48 85 C9 75 0C E8 ? ? ? ? 48 8B 0D"; //FMemory::Free
 		constexpr const char* ENGINE = "41 B8 01 00 00 00 ? ? ? 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 85 C0"; //we cant do it without gengine but its faster and more reliable (GEngine)
 	}
-
-	template <typename T>
-	struct GameObject {
-	public:
-		GameObject(uintptr address) {
-			this->m_address = address;
-			if (address)
-			{
-				this->data = *reinterpret_cast<T*>(this->get_address());
-			}
-		}
-
-		const uintptr get_address() { return this->m_address; };
-
-		const T get_data() { return this->data; };
-
-		operator bool() {
-			return this->get_address() != 0;
-		}
-
-		bool operator==(GameObject& other)
-		{
-			return this->get_address() == other.get_address();
-		}
-
-	private:
-		uintptr m_address;
-		T data;
-	};
-
-
-
-	struct UObject : public GameObject<ue4::UObject> {
-	public:
-		UObject(uintptr address) : GameObject(address) { };
-
-		UObject get_class_private() {
-			if (!*this || !this->get_data().ClassPrivate) return UObject(0);
-			return UObject((uintptr)this->get_data().ClassPrivate);
-		}
-
-		UObject get_outer_private() {
-			if (!*this || !this->get_data().OuterPrivate) return UObject(0);
-			return UObject((uintptr)this->get_data().OuterPrivate);
-		}
-
-		const std::wstring get_name(void);
-		const std::wstring get_full_name(void);
-	};
-
-	struct FUObjectItem : public GameObject<ue4::FUObjectItem> {
-	public:
-		FUObjectItem(uintptr address) : GameObject(address) {};
-
-		const UObject get_object() {
-			return UObject((uintptr)this->get_data().Object);
-		}
-	};
-
-	struct ObjectArray {
-	public:
-		ObjectArray() {
-			this->m_ObjectArray = nullptr;
-		}
-
-		ObjectArray(const upgun::ue4::TUObjectArray* ObjectArray)
-		{
-			this->m_ObjectArray = const_cast<upgun::ue4::TUObjectArray*>(ObjectArray);
-		}
-
-		const int32 Num() {
-			upgun::ue4::TUObjectArray* Array = GetArray();
-			if (!Array) return 0;
-			return Array->NumElements;
-		}
-
-		UObject GetElement(int32 Index);
-
-		UObject find(std::function<bool(UObject&)> pred);
-		std::vector<UObject> find_all(std::function<bool(UObject&)> pred);
-
-		upgun::ue4::TUObjectArray* GetArray() {
-			return this->m_ObjectArray;
-		}
-
-	private:
-		upgun::ue4::TUObjectArray* m_ObjectArray;
-	};
 
 	class Game {
 	protected:
