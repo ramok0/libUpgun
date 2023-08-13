@@ -7,6 +7,11 @@ void upgun::Game::FreeMemory(void* Address)
 		reinterpret_cast<void(__fastcall*)(void*)>(this->m_Free)(Address);
 }
 
+void upgun::Game::ProcessEvent(UObject object, UObject function, void* params)
+{
+	reinterpret_cast<void(__fastcall*)(void*, void*, void*)>(this->m_ProcessEvent)((void*)object.get_address(), (void*)function.get_address(), params);
+}
+
 const std::wstring upgun::ue4::FName::ToString(void)
 {
 	ue4::FString out;
@@ -39,4 +44,5 @@ void upgun::Game::find_patterns()
 	this->m_Objects = Memcury::Scanner::FindPattern(patterns::OBJECTS).RelativeOffset(3).GetAs<void*>();
 	this->m_Free = Memcury::Scanner::FindPattern(patterns::FREE).GetAs<void*>();
 	this->m_FNameToString = Memcury::Scanner::FindPattern(patterns::FNAMETOSTRING).GetAs<void*>();
+	this->m_ProcessEvent = Memcury::Scanner::FindPattern(patterns::PROCESSEVENT).GetAs<void*>();
 }
