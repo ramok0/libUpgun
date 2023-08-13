@@ -3,5 +3,8 @@
 
 void upgun::Game::find_patterns()
 {
-	MISSING_IMPL
+	this->m_Engine = Memcury::Scanner::FindPattern(patterns::ENGINE).AbsoluteOffset(9).RelativeOffset(3).GetAs<void*>();
+	this->m_Objects = Memcury::Scanner::FindPattern(patterns::OBJECTS).RelativeOffset(3).GetAs<void*>();
+	this->m_Free = Memcury::Scanner::FindPattern(patterns::FREE).GetAs<void*>();
+	this->m_FNameToString = Memcury::Scanner::FindPattern(patterns::FNAMETOSTRING).GetAs<void*>();
 }
