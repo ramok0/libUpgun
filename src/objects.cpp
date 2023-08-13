@@ -28,7 +28,9 @@ const std::wstring upgun::UObject::get_full_name(void)
 
 upgun::UObject upgun::ObjectArray::GetElement(int32 Index)
 {
-	upgun::ue4::FUObjectItem* Item = GetArray()->GetObjectPtr(Index);
+	upgun::ue4::TUObjectArray* Array = GetArray();
+	if (!Array) return UObject(0);
+	upgun::ue4::FUObjectItem* Item = Array->GetObjectPtr(Index);
 	if (Item && Item->Object) {
 		return UObject((uintptr)Item->Object);
 	}
@@ -38,6 +40,8 @@ upgun::UObject upgun::ObjectArray::GetElement(int32 Index)
 
 upgun::UObject upgun::ObjectArray::find(std::function<bool(UObject&)> pred)
 {
+	upgun::ue4::TUObjectArray* Array = GetArray();
+	if (!Array) return UObject(0);
 	for (int i = 0; i < this->Num(); i++)
 	{
 		upgun::UObject element = this->GetElement(i);
@@ -54,8 +58,9 @@ upgun::UObject upgun::ObjectArray::find(std::function<bool(UObject&)> pred)
 
 std::vector<upgun::UObject> upgun::ObjectArray::find_all(std::function<bool(UObject&)> pred)
 {
+	upgun::ue4::TUObjectArray* Array = GetArray();
 	std::vector<upgun::UObject> result;
-
+	if (!Array) return result;
 	for (int i = 0; i < this->Num(); i++)
 	{
 		upgun::UObject element = this->GetElement(i);

@@ -74,13 +74,19 @@ namespace upgun {
 
 	struct ObjectArray {
 	public:
+		ObjectArray() {
+			this->m_ObjectArray = nullptr;
+		}
+
 		ObjectArray(const upgun::ue4::TUObjectArray* ObjectArray)
 		{
 			this->m_ObjectArray = const_cast<upgun::ue4::TUObjectArray*>(ObjectArray);
 		}
 
 		const int32 Num() {
-			return GetArray()->NumElements;
+			upgun::ue4::TUObjectArray* Array = GetArray();
+			if (!Array) return 0;
+			return Array->NumElements;
 		}
 
 		UObject GetElement(int32 Index);
@@ -108,8 +114,8 @@ namespace upgun {
 			m_GameEngine(nullptr) {
 			
 			this->m_baseAddress = (uintptr)GetModuleHandleA(0);
-
 			this->find_patterns();
+			this->m_ObjectArray = ObjectArray(this->GetObjectsPtr());
 		}
 
 		static Game GetSingleton()
@@ -121,7 +127,7 @@ namespace upgun {
 		void FreeMemory(void* Address);
 
 		ObjectArray GetObjects() {
-			return ObjectArray(this->GetObjectsPtr());
+			return this->m_ObjectArray;
 		}
 
 		const void* get_fnametostring_ptr() { return this->m_FNameToString; };
@@ -136,5 +142,6 @@ namespace upgun {
 		void* m_Free;
 		void* m_GameEngine;
 		uintptr m_baseAddress;
+		ObjectArray m_ObjectArray;
 	};
 }
