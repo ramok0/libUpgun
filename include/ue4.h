@@ -3,6 +3,8 @@
 #include "types.h"
 
 namespace upgun {
+	struct UClass;
+
 	namespace ue4 {
 		//https://docs.unrealengine.com/4.26/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/StringHandling/FName/
 		struct FName {
@@ -74,5 +76,38 @@ namespace upgun {
 
 			const std::wstring ToString(void);
 		};
+
+		//https://docs.unrealengine.com/4.27/en-US/API/Runtime/CoreUObject/UObject/UField/
+		struct UField : public UObject {
+			UField* Next;
+		};
+
+		//https://docs.unrealengine.com/4.27/en-US/API/Runtime/CoreUObject/UObject/UStruct/
+		struct UStruct : UField {
+			char pad[0x10];
+			UStruct* SuperStruct;
+			UField* Children;
+			struct FField* ChildProperties;
+
+			static UClass* StaticClass();
+		};
+
+		//https://docs.unrealengine.com/4.27/en-US/API/Runtime/CoreUObject/UObject/FField/
+		struct FField {
+			char pad[0x20];
+			FField* Next;
+			FName NamePrivate;
+			int32 FlagsPrivate;
+		};
+
+		struct FProperty : FField {
+			char pad_1[0x14];
+			uint16 Offset;
+		};
+
+		static_assert(offsetof(UStruct, ChildProperties) == 0x50);
+		static_assert(offsetof(FField, Next) == 0x20);
+		static_assert(offsetof(FField, NamePrivate) == 0x28);
+		static_assert(offsetof(FProperty, Offset) == 0x4C);
 	}
 }
