@@ -51,5 +51,23 @@ namespace upgun {
 
 			ue4::FUObjectItem* GetObjectPtr(int32 Index);
 		};
+	
+		template <typename T>
+		struct TArray {
+			T* Data;
+			int32 Count;
+			int32 Max;
+		};
+
+		struct FString : TArray<wchar_t> {
+		public:
+			//default constructor for nullallocated FString
+			FString() {
+				this->Data = nullptr;
+				this->Count = this->Max = 0;
+			}
+
+			const std::wstring ToString(void);
+		};
 	}
 }

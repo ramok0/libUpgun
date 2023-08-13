@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <stdexcept>
+#include <iostream>
 #include "types.h"
 #include "ue4.h"
 
@@ -41,9 +42,10 @@ namespace upgun {
 		public:
 			GameObject(uintptr address) {
 				this->m_address = address;
-				if (!address)
-					throw std::runtime_error("Tried to read nullptr");
-				this->data = *reinterpret_cast<T*>(this->get_address());
+				if (address)
+				{
+					this->data = *reinterpret_cast<T*>(this->get_address());
+				}
 			}
 
 			const uintptr get_address() { return this->m_address; };
@@ -63,15 +65,18 @@ namespace upgun {
 		public :
 			UObject(uintptr address) : GameObject(address) { };
 			
-			const UObject get_class_private() {
+			UObject get_class_private() {
+				if (!*this || !this->get_data().ClassPrivate) return UObject(0);
 				return UObject((uintptr)this->get_data().ClassPrivate);
 			}		
 			
-			const UObject get_outer_private() {
+			UObject get_outer_private() {
+				if (!*this || !this->get_data().OuterPrivate) return UObject(0);
 				return UObject((uintptr)this->get_data().OuterPrivate);
 			}
 
 			const std::wstring get_name(void);
+			const std::wstring get_full_name(void);
 		};
 
 		struct FUObjectItem : public GameObject<ue4::FUObjectItem> {
@@ -92,23 +97,7 @@ namespace upgun {
 			static const UObject GetElement(int32 Index);
 		};
 
-		template <typename T>
-		struct TArray {
-			T* Data;
-			int32 Count;
-			int32 Max;
-		};
 
-		struct FString : TArray<wchar_t> {
-		public:
-			//default constructor for nullallocated FString
-			FString() {
-				this->Data = nullptr;
-				this->Count = this->Max = 0;
-			}
-
-			const std::wstring ToString(void);
-		};
 
 		const void* get_fnametostring_ptr() { return this->m_FNameToString; };
 		const void* get_engine_ptr() { return this->m_GameEngine; };

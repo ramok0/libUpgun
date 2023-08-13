@@ -7,6 +7,25 @@ void upgun::Game::FreeMemory(void* Address)
 		reinterpret_cast<void(__fastcall*)(void*)>(this->m_Free)(Address);
 }
 
+const std::wstring upgun::ue4::FName::ToString(void)
+{
+	Game::FString out;
+
+	const void* FNameToString = Game::GetSingleton().get_fnametostring_ptr();
+
+	if (!FNameToString) return std::wstring();
+
+	const Game::FString* temp = reinterpret_cast<Game::FString * (__fastcall*)(FName*, Game::FString*)>(FNameToString)(this, &out);
+	if (!temp) return std::wstring();
+
+	const std::wstring result = out.ToString();
+
+	//Free memory since it will leak otherwise
+	Game::GetSingleton().FreeMemory(out.Data);
+
+	return result;
+}
+
 const upgun::ue4::TUObjectArray* upgun::Game::GetObjectsPtr()
 {
 	ue4::TUObjectArray* Array = reinterpret_cast<upgun::ue4::TUObjectArray*>(this->m_Objects);

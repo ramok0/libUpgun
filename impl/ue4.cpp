@@ -7,3 +7,9 @@ upgun::ue4::FUObjectItem* upgun::ue4::TUObjectArray::GetObjectPtr(int32 Index)
 	FUObjectItem* Chunk = Objects[ChunkIndex];
 	return Chunk + WithinChunkIndex;
 }
+
+const std::wstring upgun::ue4::FString::ToString(void)
+{
+	//this is a shitty implementation
+	return std::wstring(Data);
+}
