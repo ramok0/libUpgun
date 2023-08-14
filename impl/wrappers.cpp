@@ -1,4 +1,4 @@
-#include "libupgun.hpp"
+#include "../include/libupgun.hpp"
 
 void upgun::UMaterialInstanceDynamic::SetTextureParameterValue(ue4::FName ParameterName, void* Value)
 {

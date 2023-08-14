@@ -30,7 +30,7 @@
     <ClCompile Include="impl\objects.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="include\wrappers.cpp">
+    <ClCompile Include="impl\wrappers.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
