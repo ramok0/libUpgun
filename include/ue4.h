@@ -144,6 +144,12 @@ namespace upgun {
 			FName ReturnValue;
 		};
 
+		struct UMaterialInstanceDynamic_SetTextureParameterValue_Params
+		{
+			FName ParameterName;
+			UObject* Value;
+		};
+
 		struct KismetRenderingLibrary {
 			static struct UTexture2D* ImportFileAsTexture2D(const wchar_t* Filename);
 
@@ -155,6 +161,19 @@ namespace upgun {
 
 			static UClass* StaticClass();
 		};
+
+		struct FUpGunOSSItemId {
+			struct FString ID; // 0x00(0x10)
+		};
+
+		struct FUpGunInventoryItem {
+			struct FUpGunOSSItemId InstanceID; // 0x00(0x10)
+			struct FUpGunOSSItemId ItemId; // 0x10(0x10)
+			int32_t Quantity; // 0x20(0x04)
+			char Flags; // 0x24(0x01)
+			char pad_25[0x3]; // 0x25(0x03)
+		};
+
 
 		static_assert(offsetof(UStruct, ChildProperties) == 0x50);
 		static_assert(offsetof(FField, Next) == 0x20);
