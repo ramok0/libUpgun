@@ -148,8 +148,6 @@ namespace upgun {
 				}
 				void* Address = *(void**)(Base + Offset);
 
-				std::cout << "0x" << Base << " + " << "0x" << Offset << " = " << Address << std::endl;
-				
 				return ReflectedObject((uintptr)Address);
 			}
 
@@ -168,8 +166,7 @@ namespace upgun {
 				}
 				T* Address = (T*)(Base + Offset);
 
-				std::cout << "0x" << Base << " + " << "0x" << Offset << " = " << Address << std::endl;
-
+		
 				return *Address;
 			}
 
