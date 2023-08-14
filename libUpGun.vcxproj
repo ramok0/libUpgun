@@ -148,6 +148,7 @@
     <ClCompile Include="impl\native.cpp" />
     <ClCompile Include="impl\objects.cpp" />
     <ClCompile Include="impl\ue4.cpp" />
+    <ClCompile Include="include\wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\libupgun.hpp" />
