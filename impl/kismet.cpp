@@ -22,3 +22,23 @@ upgun::ue4::UTexture2D* upgun::ue4::KismetRenderingLibrary::ImportFileAsTexture2
 	
 	return nullptr;
 }
+
+upgun::ue4::FName upgun::ue4::KismetStringLibrary::StringToName(const wchar_t* String)
+{
+	upgun::UObject library = Game::GetSingleton().get_kismet_string_library();
+
+	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetStringLibrary.Conv_StringToName");
+
+	if (library)
+	{
+		UKismetStringLibrary_Conv_StringToName_Params params;
+
+		params.inString = String;
+
+		library.ProcessEvent(Function, &params);
+
+		return params.ReturnValue;
+	}
+
+	return FName::Empty();
+}

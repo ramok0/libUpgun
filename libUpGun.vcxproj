@@ -143,10 +143,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="impl\kismet.cpp" />
     <ClCompile Include="impl\libupgun.cpp" />
     <ClCompile Include="impl\native.cpp" />
+    <ClCompile Include="impl\objects.cpp" />
     <ClCompile Include="impl\ue4.cpp" />
-    <ClCompile Include="src\objects.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\libupgun.hpp" />

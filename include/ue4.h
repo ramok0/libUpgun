@@ -12,6 +12,14 @@ namespace upgun {
 			__int32 ComparisonIndex;
 			__int32 Number;
 
+			static FName Empty() {
+				return { 0, 0 };
+			}
+
+			operator bool() {
+				return this->ComparisonIndex != 0;
+			}
+
 			const std::wstring ToString(void);
 		};
 
@@ -130,6 +138,12 @@ namespace upgun {
 			UObject* ReturnValue;
 		};
 
+		struct UKismetStringLibrary_Conv_StringToName_Params
+		{
+			FString inString;
+			FName ReturnValue;
+		};
+
 		struct KismetRenderingLibrary {
 			static struct UTexture2D* ImportFileAsTexture2D(const wchar_t* Filename);
 
@@ -137,6 +151,8 @@ namespace upgun {
 		};
 
 		struct KismetStringLibrary {
+			static FName StringToName(const wchar_t* String);
+
 			static UClass* StaticClass();
 		};
 
