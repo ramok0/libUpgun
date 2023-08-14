@@ -5,6 +5,15 @@
 #include "types.h"
 #include "wrappers.h"
 
+#define STATIC_OBJECT_GETTER(fnName, ptrName, objectName) \
+	const UObject fnName() { \
+		if(!ptrName)\
+		{\
+			ptrName = this->GetObjects().find(objectName); \
+		}\
+		return ptrName; \
+	}	
+
 namespace upgun {
 	namespace patterns {
 		constexpr const char* OBJECTS = "48 8B 05 ? ? ? ? 48 8B 0C C8 48 8D 04 D1 EB"; //TUObjectArray ObjObjects;
@@ -19,12 +28,12 @@ namespace upgun {
 		const struct upgun::ue4::TUObjectArray* GetObjectsPtr();
 
 	public:
-		Game() : 
+		Game() :
 			m_Objects(nullptr),
 			m_FNameToString(nullptr),
 			m_Free(nullptr),
 			m_GameEngine(nullptr) {
-			
+
 			this->m_baseAddress = (uintptr)GetModuleHandleA(0);
 			this->find_patterns();
 
@@ -47,24 +56,15 @@ namespace upgun {
 
 		const void* get_fnametostring_ptr() { return this->m_FNameToString; };
 		const void* get_engine_ptr() { return *(void**)this->m_GameEngine; };
-		const UObject get_kismet_rendering_library() { 
-			if (!this->m_KismetRenderingLibrary)
-				this->m_KismetRenderingLibrary = this->GetObjects().find(L"KismetRenderingLibrary /Script/Engine.Default__KismetRenderingLibrary", true);
 
-			return this->m_KismetRenderingLibrary;
-		};		
-		
-		const UObject get_kismet_string_library() { 
-			if (!this->m_KismetStringLibrary)
-				this->m_KismetStringLibrary = this->GetObjects().find(L"KismetStringLibrary /Script/Engine.Default__KismetStringLibrary", true);
-
-			return this->m_KismetStringLibrary;
-		};
+		STATIC_OBJECT_GETTER(get_kismet_rendering_library, this->m_KismetRenderingLibrary, L"KismetRenderingLibrary /Script/Engine.Default__KismetRenderingLibrary");
+		STATIC_OBJECT_GETTER(get_kismet_string_library, this->m_KismetStringLibrary, L"KismetStringLibrary /Script/Engine.Default__KismetStringLibrary");
+		STATIC_OBJECT_GETTER(get_upgun_inventory_subsystem, this->m_UpGunInventorySubsystem, L"UpGunInventorySubsystem /Engine/Transient");
 
 	private:
 		//find addresses for objects, fnametostr, free and engine, throw if it fails
 		void find_patterns();
-		
+
 		void* m_Objects;
 		void* m_FNameToString;
 		void* m_Free;
@@ -72,6 +72,7 @@ namespace upgun {
 		void* m_ProcessEvent;
 		UObject m_KismetRenderingLibrary;
 		UObject m_KismetStringLibrary;
+		UObject m_UpGunInventorySubsystem;
 		uintptr m_baseAddress;
 		ObjectArray m_ObjectArray;
 	};
