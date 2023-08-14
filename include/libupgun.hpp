@@ -27,6 +27,7 @@ namespace upgun {
 			
 			this->m_baseAddress = (uintptr)GetModuleHandleA(0);
 			this->find_patterns();
+
 			this->m_ObjectArray = ObjectArray(this->GetObjectsPtr());
 		}
 
@@ -45,7 +46,20 @@ namespace upgun {
 		}
 
 		const void* get_fnametostring_ptr() { return this->m_FNameToString; };
-		const void* get_engine_ptr() { return this->m_GameEngine; };
+		const void* get_engine_ptr() { return *(void**)this->m_GameEngine; };
+		const UObject get_kismet_rendering_library() { 
+			if (!this->m_KismetRenderingLibrary)
+				this->m_KismetRenderingLibrary = this->GetObjects().find(L"KismetRenderingLibrary /Script/Engine.Default__KismetRenderingLibrary", true);
+
+			return this->m_KismetRenderingLibrary;
+		};		
+		
+		const UObject get_kismet_string_library() { 
+			if (!this->m_KismetStringLibrary)
+				this->m_KismetStringLibrary = this->GetObjects().find(L"KismetStringLibrary /Script/Engine.Default__KismetStringLibrary", true);
+
+			return this->m_KismetStringLibrary;
+		};
 
 	private:
 		//find addresses for objects, fnametostr, free and engine, throw if it fails
@@ -56,7 +70,8 @@ namespace upgun {
 		void* m_Free;
 		void* m_GameEngine;
 		void* m_ProcessEvent;
-		void* m_Kismet;
+		UObject m_KismetRenderingLibrary;
+		UObject m_KismetStringLibrary;
 		uintptr m_baseAddress;
 		ObjectArray m_ObjectArray;
 	};
