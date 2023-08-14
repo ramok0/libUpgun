@@ -174,6 +174,11 @@ namespace upgun {
 			char pad_25[0x3]; // 0x25(0x03)
 		};
 
+		struct UpGunInventorySubsystem {
+			TArray<FUpGunInventoryItem> GetItems(void);
+
+			static UClass* StaticClass();
+		};
 
 		static_assert(offsetof(UStruct, ChildProperties) == 0x50);
 		static_assert(offsetof(FField, Next) == 0x20);

@@ -43,3 +43,25 @@ upgun::UClass* upgun::ue4::KismetStringLibrary::StaticClass()
 
 		return &staticClass;
 }
+
+upgun::ue4::TArray<upgun::ue4::FUpGunInventoryItem> upgun::ue4::UpGunInventorySubsystem::GetItems(void)
+{
+	upgun::ue4::TArray<upgun::ue4::FUpGunInventoryItem> result;
+
+	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/UpGun.UpGunInventorySubsystem.GetItems");
+
+	upgun::UObject subsystem = Game::GetSingleton().get_upgun_inventory_subsystem();
+
+	subsystem.ProcessEvent(Function, &result);
+
+	return result;
+}
+
+upgun::UClass* upgun::ue4::UpGunInventorySubsystem::StaticClass()
+{
+	static upgun::UClass staticClass = Game::GetSingleton().GetObjects()
+		.find(L"Class /Script/UpGun.UpGunInventorySubsystem")
+		.Cast<upgun::UClass>();
+
+	return &staticClass;
+}
