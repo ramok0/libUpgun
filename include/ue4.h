@@ -4,8 +4,15 @@
 
 namespace upgun {
 	struct UClass;
+	struct UMaterialInstanceDynamic;
 
 	namespace ue4 {
+
+		enum class EMIDCreationFlags : uint8 {
+			None = 0,
+			Transient = 1,
+			EMIDCreationFlags_MAX = 2
+		};
 
 		//https://docs.unrealengine.com/4.26/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/StringHandling/FName/
 		struct FName {
@@ -142,6 +149,15 @@ namespace upgun {
 		{
 			FString inString;
 			FName ReturnValue;
+		};		
+		
+		struct UKismetMaterialLibrary_CreateDynamicMaterialInstance_Params
+		{
+			UObject* WorldContextObject;
+			struct UMaterialInterface* Parent;
+			FName OptionalName;
+			EMIDCreationFlags CreationFlags;
+			UMaterialInstanceDynamic* ReturnValue;
 		};
 
 		struct UMaterialInstanceDynamic_SetTextureParameterValue_Params
@@ -163,6 +179,8 @@ namespace upgun {
 		};
 
 		struct KismetMaterialLibrary {
+			static UMaterialInstanceDynamic* CreateDynamicMaterialInstance(UObject* WorldContextObject, struct UMaterialInterface* Parent, FName OptionalName, EMIDCreationFlags CreationFlags);
+
 			static UClass* StaticClass();
 		};
 
@@ -179,7 +197,7 @@ namespace upgun {
 		};
 
 		struct UpGunInventorySubsystem {
-			TArray<FUpGunInventoryItem> GetItems(void);
+			static TArray<FUpGunInventoryItem> GetItems(void);
 
 			static UClass* StaticClass();
 		};

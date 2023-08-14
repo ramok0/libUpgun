@@ -24,25 +24,6 @@ upgun::UClass* upgun::ue4::UStruct::StaticClass()
 		return &staticClass;
 }
 
-upgun::UClass* upgun::ue4::KismetRenderingLibrary::StaticClass()
-{
-	static upgun::UClass staticClass = Game::GetSingleton().GetObjects().find([](upgun::UObject& object)
-		{
-			return object.get_full_name() == L"Class /Script/Engine.KismetRenderingLibrary";
-		}).Cast<upgun::UClass>();
-
-		return &staticClass;
-}
-
-upgun::UClass* upgun::ue4::KismetStringLibrary::StaticClass()
-{
-	static upgun::UClass staticClass = Game::GetSingleton().GetObjects().find([](upgun::UObject& object)
-		{
-			return object.get_full_name() == L"Class /Script/Engine.KismetStringLibrary";
-		}).Cast<upgun::UClass>();
-
-		return &staticClass;
-}
 
 upgun::ue4::TArray<upgun::ue4::FUpGunInventoryItem> upgun::ue4::UpGunInventorySubsystem::GetItems(void)
 {
@@ -61,15 +42,6 @@ upgun::UClass* upgun::ue4::UpGunInventorySubsystem::StaticClass()
 {
 	static upgun::UClass staticClass = Game::GetSingleton().GetObjects()
 		.find(L"Class /Script/UpGun.UpGunInventorySubsystem")
-		.Cast<upgun::UClass>();
-
-	return &staticClass;
-}
-
-upgun::UClass* upgun::ue4::KismetMaterialLibrary::StaticClass()
-{
-	static upgun::UClass staticClass = Game::GetSingleton().GetObjects()
-		.find(L"Class /Script/Engine.KismetMaterialLibrary")
 		.Cast<upgun::UClass>();
 
 	return &staticClass;
