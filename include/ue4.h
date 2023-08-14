@@ -131,7 +131,7 @@ namespace upgun {
 		};
 
 		struct KismetRenderingLibrary {
-			struct UTexture2D* ImportFileAsTexture2D(const wchar_t* Filename);
+			static struct UTexture2D* ImportFileAsTexture2D(const wchar_t* Filename);
 
 			static UClass* StaticClass();
 		};
