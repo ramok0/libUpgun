@@ -65,3 +65,12 @@ upgun::UClass* upgun::ue4::UpGunInventorySubsystem::StaticClass()
 
 	return &staticClass;
 }
+
+upgun::UClass* upgun::ue4::KismetMaterialLibrary::StaticClass()
+{
+	static upgun::UClass staticClass = Game::GetSingleton().GetObjects()
+		.find(L"Class /Script/Engine.KismetMaterialLibrary")
+		.Cast<upgun::UClass>();
+
+	return &staticClass;
+}

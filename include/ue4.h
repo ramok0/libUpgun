@@ -162,6 +162,10 @@ namespace upgun {
 			static UClass* StaticClass();
 		};
 
+		struct KismetMaterialLibrary {
+			static UClass* StaticClass();
+		};
+
 		struct FUpGunOSSItemId {
 			struct FString ID; // 0x00(0x10)
 		};
