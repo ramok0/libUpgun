@@ -148,6 +148,8 @@ namespace upgun {
 				}
 				void* Address = *(void**)(Base + Offset);
 
+				std::cout << "0x" << Base << " + " << "0x" << Offset << " = " << Address << std::endl;
+				
 				return ReflectedObject((uintptr)Address);
 			}
 
@@ -173,5 +175,12 @@ namespace upgun {
 
 			return T(0);
 		}
+	};
+
+	struct UMaterialInstanceDynamic : UObject {
+	public:
+		UMaterialInstanceDynamic(uintptr address) : UObject(address) { };
+
+		void SetTextureParameterValue(ue4::FName ParameterName, void* Value);
 	};
 }
