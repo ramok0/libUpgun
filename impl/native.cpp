@@ -13,6 +13,16 @@ void upgun::Game::FreeMemory(void* Address)
 		reinterpret_cast<void(__fastcall*)(void*)>(this->m_Free)(Address);
 }
 
+void* upgun::Game::Malloc(size_t size)
+{
+	return reinterpret_cast<void* (__fastcall*)(size_t, uint32)>(this->m_Malloc)(size, 32);
+}
+
+void* upgun::Game::Realloc(void* Block, size_t size)
+{
+	return reinterpret_cast<void* (__fastcall*)(void*, size_t, uint32)>(this->m_Realloc)(Block, size, 32);
+}
+
 void upgun::Game::ProcessEvent(UObject object, UObject function, void* params)
 {
 	reinterpret_cast<void(__fastcall*)(void*, void*, void*)>(this->m_ProcessEvent)((void*)object.get_address(), (void*)function.get_address(), params);
