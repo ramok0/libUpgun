@@ -11,6 +11,7 @@ upgun::ue4::FUObjectItem* upgun::ue4::TUObjectArray::GetObjectPtr(int32 Index)
 const std::wstring upgun::ue4::FString::ToString(void)
 {
 	//this is a shitty implementation
+	if (!Data) return std::wstring();
 	return std::wstring(Data);
 }
 
