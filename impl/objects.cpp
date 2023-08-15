@@ -14,17 +14,6 @@ uint16 upgun::UClass::get_offset(const std::wstring PropertyName)
 	return 0;
 }
 
-upgun::UClass* upgun::UClass::StaticClass()
-{
-	static UClass staticClass = Game::GetSingleton().GetObjects().find([](upgun::UObject& object)
-		{
-			return object.get_full_name() == L"Class /Script/CoreUObject.Class";
-		}).Cast<UClass>();
-
-		return &staticClass;
-}
-
-
 bool upgun::UObject::IsAInternal(UClass* ClassPrivate)
 {
 	UClass currentClass = this->get_class_private().Cast<UClass>();

@@ -43,17 +43,6 @@ upgun::ue4::FName upgun::ue4::KismetStringLibrary::StringToName(const wchar_t* S
 	return FName::Empty();
 }
 
-upgun::UClass* upgun::ue4::KismetMaterialLibrary::StaticClass()
-{
-	static upgun::UClass staticClass = Game::GetSingleton().GetObjects()
-		.find(L"Class /Script/Engine.KismetMaterialLibrary")
-		.Cast<upgun::UClass>();
-
-	return &staticClass;
-}
-
-//			static UMaterialInstanceDynamic* CreateDynamicMaterialInstance(upgun::UObject WorldContextObject, struct UMaterialInterface* Parent, FName OptionalName, EMIDCreationFlags CreationFlags);
-
 upgun::UMaterialInstanceDynamic* upgun::ue4::KismetMaterialLibrary::CreateDynamicMaterialInstance(UObject* WorldContextObject, UMaterialInterface* Parent, FName OptionalName, EMIDCreationFlags CreationFlags)
 {
 	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.PrimitiveComponent.CreateDynamicMaterialInstance");
@@ -68,24 +57,4 @@ upgun::UMaterialInstanceDynamic* upgun::ue4::KismetMaterialLibrary::CreateDynami
 	materialLibrary.ProcessEvent(Function, &params);
 
 	return params.ReturnValue;
-}
-
-upgun::UClass* upgun::ue4::KismetStringLibrary::StaticClass()
-{
-	static upgun::UClass staticClass = Game::GetSingleton().GetObjects().find([](upgun::UObject& object)
-		{
-			return object.get_full_name() == L"Class /Script/Engine.KismetStringLibrary";
-		}).Cast<upgun::UClass>();
-
-		return &staticClass;
-}
-
-upgun::UClass* upgun::ue4::KismetRenderingLibrary::StaticClass()
-{
-	static upgun::UClass staticClass = Game::GetSingleton().GetObjects().find([](upgun::UObject& object)
-		{
-			return object.get_full_name() == L"Class /Script/Engine.KismetRenderingLibrary";
-		}).Cast<upgun::UClass>();
-
-		return &staticClass;
 }

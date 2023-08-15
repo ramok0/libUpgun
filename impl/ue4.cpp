@@ -14,17 +14,6 @@ const std::wstring upgun::ue4::FString::ToString(void)
 	return std::wstring(Data);
 }
 
-upgun::UClass* upgun::ue4::UStruct::StaticClass()
-{
-	static upgun::UClass staticClass = Game::GetSingleton().GetObjects().find([](upgun::UObject& object)
-		{
-			return object.get_full_name() == L"Class /Script/CoreUObject.Struct";
-		}).Cast<upgun::UClass>();
-
-		return &staticClass;
-}
-
-
 upgun::ue4::TArray<upgun::ue4::FUpGunInventoryItem> upgun::ue4::UpGunInventorySubsystem::GetItems(void)
 {
 	upgun::ue4::TArray<upgun::ue4::FUpGunInventoryItem> result;
@@ -36,13 +25,4 @@ upgun::ue4::TArray<upgun::ue4::FUpGunInventoryItem> upgun::ue4::UpGunInventorySu
 	subsystem.ProcessEvent(Function, &result);
 
 	return result;
-}
-
-upgun::UClass* upgun::ue4::UpGunInventorySubsystem::StaticClass()
-{
-	static upgun::UClass staticClass = Game::GetSingleton().GetObjects()
-		.find(L"Class /Script/UpGun.UpGunInventorySubsystem")
-		.Cast<upgun::UClass>();
-
-	return &staticClass;
 }
