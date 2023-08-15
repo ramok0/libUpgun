@@ -4,6 +4,8 @@
 #include <vector>
 #include "types.h"
 #include "ue4.h"
+#include "uemath.h"
+
 
 namespace upgun {
 	template <typename T>
@@ -100,6 +102,13 @@ namespace upgun {
 		}
 	};
 
+	struct AActor : public UObject {
+	public:
+		AActor(uintptr address) : UObject(address) { };
+
+		FTransform GetTransform();
+	};
+
 	struct ObjectArray {
 	public:
 		ObjectArray() {
@@ -172,6 +181,12 @@ namespace upgun {
 
 			return T(0);
 		}
+	};
+
+	struct UWorld : public ReflectedObject {
+		UWorld(uintptr address) : ReflectedObject(address) { };
+
+		UObject SpawnActor(UClass Class, FTransform* Transform, const ue4::FActorSpawnParameters& SpawnParameters);
 	};
 
 	struct UMaterialInstanceDynamic : UObject {

@@ -1,5 +1,11 @@
 #include "../include/libupgun.hpp"
+
 #include "../lib/memcury/memcury.h"
+
+upgun::UWorld upgun::Game::GetWorld(void)
+{
+	return upgun::ReflectedObject((uintptr)this->get_engine_ptr()).Get(L"GameViewport").Get(L"World").Cast<UWorld>();
+}
 
 void upgun::Game::FreeMemory(void* Address)
 {
@@ -10,6 +16,24 @@ void upgun::Game::FreeMemory(void* Address)
 void upgun::Game::ProcessEvent(UObject object, UObject function, void* params)
 {
 	reinterpret_cast<void(__fastcall*)(void*, void*, void*)>(this->m_ProcessEvent)((void*)object.get_address(), (void*)function.get_address(), params);
+}
+
+void* upgun::Game::SpawnActor(UWorld World, UClass Class, FTransform const* Transform, const upgun::ue4::FActorSpawnParameters& SpawnParameters)
+{
+	return reinterpret_cast<void* (__fastcall*)(void*, void*, FTransform const*, const upgun::ue4::FActorSpawnParameters&)>(this->m_SpawnActor)((void*)World.get_address(), (void*)Class.get_address(), Transform, SpawnParameters);
+}
+
+void* upgun::Game::StaticConstructObjectInternal(UClass Class, UObject InOuter, void* Name, uint32 SetFlags, uint32 InternalSetFlags, UObject Template, bool bCopyTransientsFromClassDefaults, void* InstanceGraph, bool bAssumeTemplateIsArchetype)
+{
+	return reinterpret_cast<void* (__fastcall*)(UClass * Class,
+		UObject * InOuter,
+		void* Name,
+		uint32 SetFlags,
+		uint32 InternalSetFlags,
+		UObject * Template,
+		bool  bCopyTransientsFromClassDefaults,
+		void* InstanceGraph,
+		bool  bAssumeTemplateIsArchetype)>(this->m_SCOI)((upgun::UClass*)Class.get_address(), (upgun::UObject*)InOuter.get_address(), Name, SetFlags, InternalSetFlags, (upgun::UObject*)Template.get_address(), bCopyTransientsFromClassDefaults, InstanceGraph, bAssumeTemplateIsArchetype);
 }
 
 const std::wstring upgun::ue4::FName::ToString(void)
@@ -45,4 +69,6 @@ void upgun::Game::find_patterns()
 	this->m_Free = Memcury::Scanner::FindPattern(patterns::FREE).GetAs<void*>();
 	this->m_FNameToString = Memcury::Scanner::FindPattern(patterns::FNAMETOSTRING).GetAs<void*>();
 	this->m_ProcessEvent = Memcury::Scanner::FindPattern(patterns::PROCESSEVENT).GetAs<void*>();
+	this->m_SpawnActor = Memcury::Scanner::FindPattern(patterns::SPAWNACTOR).GetAs<void*>();
+	this->m_SCOI = Memcury::Scanner::FindPattern(patterns::STATICCONSTRUCTOBJECTINTERNAL).GetAs<void*>();
 }

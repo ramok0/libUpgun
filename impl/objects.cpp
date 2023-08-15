@@ -27,7 +27,17 @@ upgun::UClass* upgun::UClass::StaticClass()
 
 bool upgun::UObject::IsAInternal(UClass* ClassPrivate)
 {
-	return (UClass*)this->get_class_private().get_address() == ClassPrivate;
+	UClass currentClass = this->get_class_private().Cast<UClass>();
+	
+	while (currentClass.get_address() != (uintptr)ClassPrivate)
+	{
+		void* Super = currentClass.get_raw_pointer()->SuperStruct;
+		if (!Super) break;
+
+		currentClass = UClass((uintptr)Super);
+	}
+
+	return currentClass.get_address() == (uintptr)ClassPrivate;
 }
 
 void upgun::UObject::ProcessEvent(UObject Function, void* params)

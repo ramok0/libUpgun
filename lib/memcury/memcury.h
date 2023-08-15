@@ -48,6 +48,9 @@
 #include <DbgHelp.h>
 #pragma comment(lib, "Dbghelp.lib")
 
+#define max(x, y) (((x) > (y)) ? (x) : (y))
+#define min(x, y) (((x) < (y)) ? (x) : (y))
+
 #define MemcuryAssert(cond)                                              \
     if (!(cond))                                                         \
     {                                                                    \

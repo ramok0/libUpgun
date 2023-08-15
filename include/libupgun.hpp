@@ -21,6 +21,8 @@ namespace upgun {
 		constexpr const char* FREE = "48 85 C9 74 2E 53 48 83 EC 20 48 8B D9 48 8B 0D ? ? ? ? 48 85 C9 75 0C E8 ? ? ? ? 48 8B 0D"; //FMemory::Free
 		constexpr const char* ENGINE = "41 B8 01 00 00 00 ? ? ? 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 85 C0"; //we can do it without gengine but its faster and more reliable (GEngine)
 		constexpr const char* PROCESSEVENT = "40 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8D 6C 24 ? 48 89 9D ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C5 48 89 85 ? ? ? ? 8B 41 0C 45 33 F6 3B 05 ? ? ? ? 4D 8B F8 48 8B F2 4C 8B E1 41 B8 ? ? ? ? 7D 2A 99 41 23 D0";
+		constexpr const char* SPAWNACTOR = "40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 40 49 8B D8 4C 8B E9";
+		constexpr const char* STATICCONSTRUCTOBJECTINTERNAL = "48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 48 8B 39 4C 8D 25 ? ? ? ? 4C 8B 79 08 48 8B D9";
 	}
 
 	class Game {
@@ -46,9 +48,16 @@ namespace upgun {
 			return instance;
 		}
 
+		UWorld GetWorld(void);
+
 		void FreeMemory(void* Address);
 
 		void ProcessEvent(UObject object, UObject function, void* params);
+
+		void* SpawnActor(UWorld World, UClass Class, FTransform const* Transform, const upgun::ue4::FActorSpawnParameters& SpawnParameters);
+		void* StaticConstructObjectInternal(UClass Class, UObject InOuter, void* Name, uint32 SetFlags, uint32 InternalSetFlags, UObject Template, bool  bCopyTransientsFromClassDefaults,
+			void* InstanceGraph,
+			bool  bAssumeTemplateIsArchetype);
 
 		ObjectArray GetObjects() {
 			return this->m_ObjectArray;
@@ -71,6 +80,8 @@ namespace upgun {
 		void* m_Free;
 		void* m_GameEngine;
 		void* m_ProcessEvent;
+		void* m_SCOI;
+		void* m_SpawnActor;
 		UObject m_KismetRenderingLibrary;
 		UObject m_KismetStringLibrary;
 		UObject m_KismetMaterialLibrary;

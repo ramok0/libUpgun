@@ -99,7 +99,7 @@ namespace upgun {
 
 			FString(const wchar_t* other)
 			{
-				Max = Count = *other ? std::wcslen(other) + 1 : 0;
+				Max = Count = *other ? (int32)std::wcslen(other) + 1 : 0;
 
 				if (Count)
 				{
@@ -202,9 +202,57 @@ namespace upgun {
 			static UClass* StaticClass();
 		};
 
+		enum class ESpawnActorCollisionHandlingMethod : uint8
+		{
+			/** Fall back to default settings. */
+			Undefined,								
+			/** Actor will spawn in desired location, regardless of collisions. */
+			AlwaysSpawn,								
+			/** Actor will try to find a nearby non-colliding location (based on shape components), but will always spawn even if one cannot be found. */
+			AdjustIfPossibleButAlwaysSpawn,
+			/** Actor will try to find a nearby non-colliding location (based on shape components), but will NOT spawn unless one is found. */
+			AdjustIfPossibleButDontSpawnIfColliding,
+			/** Actor will fail to spawn. */
+			DontSpawnIfColliding,
+		};
+
+		enum class ESpawnActorScaleMethod : uint8
+		{
+			/** Ignore the default scale in the actor's root component and hard-set it to the value of SpawnTransform Parameter */
+			OverrideRootScale,
+			/** Multiply value of the SpawnTransform Parameter with the default scale in the actor's root component */
+			MultiplyWithRoot,
+			SelectDefaultAtRuntime,
+		};
+
+
+		struct FActorSpawnParameters {
+			FName Name;
+
+			/* An Actor to use as a template when spawning the new Actor. The spawned Actor will be initialized using the property values of the template Actor. If left NULL the class default object (CDO) will be used to initialize the spawned Actor. */
+			UObject* Template;
+
+			/* The Actor that spawned this Actor. (Can be left as NULL). */
+			UObject* Owner;
+
+			/* The APawn that is responsible for damage done by the spawned Actor. (Can be left as NULL). */
+			UObject* Instigator;
+
+			/* The ULevel to spawn the Actor in, i.e. the Outer of the Actor. If left as NULL the Outer of the Owner is used. If the Owner is NULL the persistent level is used. */
+			UObject* OverrideLevel;
+
+			UObject* OverrideParentComponent;
+
+			ESpawnActorCollisionHandlingMethod SpawnCollisionHandlingOverride;
+
+			/** Determines whether to multiply or override root component with provided spawn transform */
+			ESpawnActorScaleMethod TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		};
+
 		static_assert(offsetof(UStruct, ChildProperties) == 0x50);
 		static_assert(offsetof(FField, Next) == 0x20);
 		static_assert(offsetof(FField, NamePrivate) == 0x28);
 		static_assert(offsetof(FProperty, Offset) == 0x4C);
+
 	}
 }
