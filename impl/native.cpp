@@ -81,4 +81,6 @@ void upgun::Game::find_patterns()
 	this->m_ProcessEvent = Memcury::Scanner::FindPattern(patterns::PROCESSEVENT).GetAs<void*>();
 	this->m_SpawnActor = Memcury::Scanner::FindPattern(patterns::SPAWNACTOR).GetAs<void*>();
 	this->m_SCOI = Memcury::Scanner::FindPattern(patterns::STATICCONSTRUCTOBJECTINTERNAL).GetAs<void*>();
+	this->m_Malloc = Memcury::Scanner::FindPattern(patterns::MALLOC).GetAs<void*>();
+	this->m_Realloc = Memcury::Scanner::FindPattern(patterns::REALLOC).GetAs<void*>();
 }
