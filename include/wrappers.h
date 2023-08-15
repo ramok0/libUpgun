@@ -164,6 +164,20 @@ namespace upgun {
 		}
 
 		template <typename T>
+		bool write(const wchar_t* PropertyName, T buffer) {
+			if (!*this) return false;
+
+			uint16 Offset = this->GetOffset(PropertyName);
+			uintptr Base = this->get_address();
+
+			T* Address = (T*)(Base + Offset);
+
+			*Address = buffer;
+
+			return true;
+		}
+
+		template <typename T>
 		T GetAs(const wchar_t* PropertyName)
 		{
 			if (*this) {
