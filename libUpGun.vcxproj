@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\libupgun.hpp" />
+    <ClInclude Include="include\native.h" />
     <ClInclude Include="include\types.h" />
     <ClInclude Include="include\ue4.h" />
     <ClInclude Include="include\uemath.h" />

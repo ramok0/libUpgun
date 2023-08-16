@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "types.h"
+#include "native.h"
 
 namespace upgun {
 	struct UClass;
@@ -87,6 +88,18 @@ namespace upgun {
 
 				return Data[Index];
 			}
+
+			void push(T element)
+			{
+				int32 NewCount = Count + 1;
+				size_t NewSize = sizeof(T) * NewCount;
+
+				this->Data = (T*)native::FMemoryRealloc(this->Data, NewSize, 32);
+				this->Data[Count] = element;
+
+				this->Count = NewCount;
+				this->Max++;
+			}
 		};
 
 		struct FString : TArray<wchar_t> {
@@ -166,6 +179,40 @@ namespace upgun {
 			UObject* Value;
 		};
 
+		template <typename Key, typename Value>
+		struct TMapData {
+			Key key;
+			Value value;
+			uint64_t N0000024C; //0x0010
+		};
+
+		template <typename Key, typename Value>
+		struct TMap {
+		
+			TMap() {
+
+			}
+
+			TMap(int i) {
+
+			}
+
+			TArray<TMapData<Key, Value>> Pairs;
+			char pad[0x40];
+
+			Value Find(Key in)
+			{
+				for (auto& pair : Pairs)
+				{
+					if (in == pair.key) {
+						return pair.value;
+					}
+				}
+
+				return Value{};
+			}
+		};
+
 		struct KismetRenderingLibrary {
 			static struct UTexture2D* ImportFileAsTexture2D(const wchar_t* Filename);
 
@@ -200,6 +247,28 @@ namespace upgun {
 			static TArray<FUpGunInventoryItem> GetItems(void);
 
 			static UClass* StaticClass();
+		};
+
+		struct FDataTableRowHandle {
+			FDataTableRowHandle() {
+				this->DataTable = nullptr;
+				this->RowName.ComparisonIndex = 0;
+				this->RowName.Number = 0;
+			}
+
+			FDataTableRowHandle(FName RowName) {
+				this->RowName = RowName;
+				this->DataTable = nullptr;
+			}
+
+
+			struct UDataTable* DataTable; // 0x00(0x08)
+			FName RowName; // 0x08(0x08)
+
+			bool operator==(FName other)
+			{
+				return this->RowName.ComparisonIndex == other.ComparisonIndex;
+			}
 		};
 
 		enum class ESpawnActorCollisionHandlingMethod : uint8

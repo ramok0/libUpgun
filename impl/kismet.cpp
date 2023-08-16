@@ -1,4 +1,5 @@
 #include "../include/libupgun.hpp"
+#include "../include/native.h"
 
 upgun::ue4::UTexture2D* upgun::ue4::KismetRenderingLibrary::ImportFileAsTexture2D(const wchar_t* Filename)
 {
@@ -10,8 +11,7 @@ upgun::ue4::UTexture2D* upgun::ue4::KismetRenderingLibrary::ImportFileAsTexture2
 	{
 		UKismetRenderingLibrary_ImportFileAsTexture2D_Params params;
 
-		const void* Engine = Game::GetSingleton().get_engine_ptr();
-		upgun::ReflectedObject World = upgun::ReflectedObject((uintptr)Engine).Get(L"GameViewport").Get(L"World");
+		upgun::ReflectedObject World = Game::GetSingleton().GetWorld();
 		
 		params.WorldContextObject = reinterpret_cast<upgun::ue4::UObject*>(World.get_address());
 		params.Filename = Filename;

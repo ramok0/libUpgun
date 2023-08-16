@@ -11,15 +11,6 @@ void upgun::UMaterialInstanceDynamic::SetTextureParameterValue(ue4::FName Parame
 	this->ProcessEvent(Function, &params);
 }
 
-upgun::UObject upgun::UWorld::SpawnActor(UClass Class, FTransform* Transform, const ue4::FActorSpawnParameters& SpawnParameters)
-{
-	UWorld world = Game::GetSingleton().GetWorld();
-
-	void* result = Game::GetSingleton().SpawnActor(world, Class, Transform, SpawnParameters);
-	
-	return upgun::UObject((uintptr)result);
-}
-
 FTransform upgun::AActor::GetTransform()
 {
 	static UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.Actor.GetTransform");
@@ -29,4 +20,9 @@ FTransform upgun::AActor::GetTransform()
 	this->ProcessEvent(Function, &out);
 
 	return out;
+}
+
+void upgun::APlayerController::SetMouseSensitivity(float NewSensitivity)
+{
+
 }

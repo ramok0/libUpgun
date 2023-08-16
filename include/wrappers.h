@@ -109,6 +109,13 @@ namespace upgun {
 		FTransform GetTransform();
 	};
 
+	struct APlayerController : public AActor {
+	public:
+		APlayerController(uintptr address) : AActor(address) {};
+
+		void SetMouseSensitivity(float NewSensitivity);
+	};
+
 	struct ObjectArray {
 	public:
 		ObjectArray() {

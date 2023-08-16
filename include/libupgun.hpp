@@ -6,7 +6,7 @@
 #include "wrappers.h"
 
 #define STATIC_OBJECT_GETTER(fnName, ptrName, objectName) \
-	const UObject fnName() { \
+	 UObject fnName() { \
 		if(!ptrName)\
 		{\
 			ptrName = this->GetObjects().find(objectName); \
@@ -32,11 +32,7 @@ namespace upgun {
 		const struct upgun::ue4::TUObjectArray* GetObjectsPtr();
 
 	public:
-		Game() :
-			m_Objects(nullptr),
-			m_FNameToString(nullptr),
-			m_Free(nullptr),
-			m_GameEngine(nullptr) {
+		Game() {
 
 			this->m_baseAddress = (uintptr)GetModuleHandleA(0);
 			this->find_patterns();
@@ -51,6 +47,7 @@ namespace upgun {
 		}
 
 		UWorld GetWorld(void);
+		ReflectedObject GetEngine(void);
 
 		void FreeMemory(void* Address);
 
@@ -59,40 +56,25 @@ namespace upgun {
 
 		void ProcessEvent(UObject object, UObject function, void* params);
 
-		void* SpawnActor(UWorld World, UClass Class, FTransform const* Transform, const upgun::ue4::FActorSpawnParameters& SpawnParameters);
-		void* StaticConstructObjectInternal(UClass Class, UObject InOuter, void* Name, uint32 SetFlags, uint32 InternalSetFlags, UObject Template, bool  bCopyTransientsFromClassDefaults,
-			void* InstanceGraph,
-			bool  bAssumeTemplateIsArchetype);
-
 		ObjectArray GetObjects() {
 			return this->m_ObjectArray;
 		}
-
-		const void* get_fnametostring_ptr() { return this->m_FNameToString; };
-		const void* get_engine_ptr() { return *(void**)this->m_GameEngine; };
 
 		STATIC_OBJECT_GETTER(get_kismet_rendering_library, this->m_KismetRenderingLibrary, L"KismetRenderingLibrary /Script/Engine.Default__KismetRenderingLibrary");
 		STATIC_OBJECT_GETTER(get_kismet_string_library, this->m_KismetStringLibrary, L"KismetStringLibrary /Script/Engine.Default__KismetStringLibrary");
 		STATIC_OBJECT_GETTER(get_kismet_material_library, this->m_KismetMaterialLibrary, L"KismetMaterialLibrary /Script/Engine.Default__KismetMaterialLibrary");
 		STATIC_OBJECT_GETTER(get_upgun_inventory_subsystem, this->m_UpGunInventorySubsystem, L"UpGunInventorySubsystem /Engine/Transient");
+		STATIC_OBJECT_GETTER(get_upgun_cosmetic_subsystem, this->m_UpGunCosmeticSubsystem, L"UpGunCosmeticSubsystem /Engine/Transient");
 
 	private:
 		//find addresses for objects, fnametostr, free and engine, throw if it fails
 		void find_patterns();
 
-		void* m_Objects;
-		void* m_FNameToString;
-		void* m_Free;
-		void* m_GameEngine;
-		void* m_ProcessEvent;
-		void* m_SCOI;
-		void* m_SpawnActor;
-		void* m_Malloc;
-		void* m_Realloc;
 		UObject m_KismetRenderingLibrary;
 		UObject m_KismetStringLibrary;
 		UObject m_KismetMaterialLibrary;
 		UObject m_UpGunInventorySubsystem;
+		UObject m_UpGunCosmeticSubsystem;
 		uintptr m_baseAddress;
 		ObjectArray m_ObjectArray;
 	};
