@@ -24,5 +24,7 @@ FTransform upgun::AActor::GetTransform()
 
 void upgun::APlayerController::SetMouseSensitivity(float NewSensitivity)
 {
+	static UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/UpGun.UpGunBasePlayerController.SetMouseSensitivity");
 
+	this->ProcessEvent(Function, &NewSensitivity);
 }
