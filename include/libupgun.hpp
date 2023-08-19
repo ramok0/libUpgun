@@ -48,6 +48,7 @@ namespace upgun {
 
 		UWorld GetWorld(void);
 		ReflectedObject GetEngine(void);
+		APlayerController GetLocalPlayer();
 
 		void FreeMemory(void* Address);
 
