@@ -32,6 +32,10 @@ namespace upgun {
 			return this->get_address() == other.get_address();
 		}
 
+		T* operator->() {
+			return &this->data;
+		}
+
 	private:
 		uintptr m_address;
 		T data;
@@ -113,7 +117,7 @@ namespace upgun {
 	public:
 		APlayerController(uintptr address) : AActor(address) {};
 
-		void SetMouseSensitivity(float NewSensitivity);
+		void SetMouseSensitivity(float MouseSensitivity);
 	};
 
 	struct ObjectArray {
