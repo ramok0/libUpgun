@@ -120,6 +120,18 @@ namespace upgun {
 				}
 			}
 
+			void set(const std::wstring str)
+			{
+				const wchar_t* data = str.data();
+				
+				for (unsigned int i = 0; i < str.size(); i++)
+				{
+					this->push(data[i]);
+				}
+
+				this->push(0x00);
+			}
+
 			const std::wstring ToString(void);
 		};
 
