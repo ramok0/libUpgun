@@ -153,6 +153,7 @@
     <ClCompile Include="impl\libupgun.cpp" />
     <ClCompile Include="impl\native.cpp" />
     <ClCompile Include="impl\objects.cpp" />
+    <ClCompile Include="impl\static_classes.cpp" />
     <ClCompile Include="impl\ue4.cpp" />
     <ClCompile Include="impl\wrappers.cpp" />
   </ItemGroup>
@@ -165,6 +166,5 @@
     <ClInclude Include="include\wrappers.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

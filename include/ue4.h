@@ -74,7 +74,7 @@ namespace upgun {
 
 			ue4::FUObjectItem* GetObjectPtr(int32 Index);
 		};
-	
+
 		//https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/TArrays/
 		template <typename T>
 		struct TArray {
