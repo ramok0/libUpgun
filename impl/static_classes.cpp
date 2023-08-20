@@ -37,3 +37,9 @@ upgun::UClass* upgun::ue4::KismetMaterialLibrary::StaticClass()
 	GET_STATIC_CLASS(L"Class /Script/Engine.KismetMaterialLibrary");
 	return &staticClass;
 }
+
+upgun::UClass* upgun::ue4::AUpGunDeathmatchGameMode::StaticClass()
+{
+	GET_STATIC_CLASS(L"Class /Script/UpGun.UpGunDeathmatchGameMode");
+	return &staticClass;
+}

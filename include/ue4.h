@@ -247,6 +247,11 @@ namespace upgun {
 			struct FString ID; // 0x00(0x10)
 		};
 
+		struct AUpGunDeathmatchGameMode
+		{
+			static UClass* StaticClass();
+		};
+
 		struct FUpGunInventoryItem {
 			struct FUpGunOSSItemId InstanceID; // 0x00(0x10)
 			struct FUpGunOSSItemId ItemId; // 0x10(0x10)
