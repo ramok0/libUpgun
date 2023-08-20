@@ -16,17 +16,13 @@ uint16 upgun::UClass::get_offset(const std::wstring PropertyName)
 
 bool upgun::UObject::IsAInternal(UClass* ClassPrivate)
 {
-	UClass currentClass = this->get_class_private().Cast<UClass>();
-	
-	while (currentClass.get_address() != (uintptr)ClassPrivate)
+	for (UClass currentClass = this->get_class_private().Cast<UClass>(); currentClass; currentClass = UClass((uintptr)currentClass.get_raw_pointer()->SuperStruct))
 	{
-		void* Super = currentClass.get_raw_pointer()->SuperStruct;
-		if (!Super) break;
-
-		currentClass = UClass((uintptr)Super);
+		if (currentClass.get_address() == ClassPrivate->get_address())
+			return true;
 	}
 
-	return currentClass.get_address() == (uintptr)ClassPrivate;
+	return false;;
 }
 
 void upgun::UObject::ProcessEvent(UObject Function, void* params)
