@@ -298,8 +298,11 @@ namespace upgun {
 			UNKNOWN
 		};
 
-		//upgun::ue4::FUpGunDeathmatchGameStateTags upgun::ue4::StringToGameStateTags(const std::wstring in)
 		FUpGunDeathmatchGameStateTags StringToGameStateTags(const std::wstring in);
+
+		struct AUpGunBasePlayerState {
+			static UClass* StaticClass();
+		};
 
 		enum class ESpawnActorCollisionHandlingMethod : uint8
 		{

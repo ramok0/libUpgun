@@ -43,3 +43,9 @@ upgun::UClass* upgun::ue4::AUpGunDeathmatchGameMode::StaticClass()
 	GET_STATIC_CLASS(L"Class /Script/UpGun.UpGunDeathmatchGameMode");
 	return &staticClass;
 }
+
+upgun::UClass* upgun::ue4::AUpGunBasePlayerState::StaticClass()
+{
+	GET_STATIC_CLASS(L"Class /Script/UpGun.UpGunBasePlayerState");
+	return &staticClass;
+}
