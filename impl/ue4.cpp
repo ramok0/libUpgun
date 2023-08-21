@@ -32,6 +32,10 @@ upgun::ue4::TArray<upgun::ue4::FUpGunInventoryItem> upgun::ue4::UpGunInventorySu
 upgun::ue4::FUpGunDeathmatchGameStateTags upgun::ue4::StringToGameStateTags(const std::wstring in)
 {
 	const std::map<FUpGunDeathmatchGameStateTags, const wchar_t*> EnumToString {
+		{ FUpGunDeathmatchGameStateTags::Started, L"GameState.Started" },
+		{ FUpGunDeathmatchGameStateTags::EnteringMap, L"GameState.EnteringMap" },
+		{ FUpGunDeathmatchGameStateTags::WaitingToStart, L"GameState.WaitingToStart" },
+		{ FUpGunDeathmatchGameStateTags::Finished, L"GameState.Finished" },
 		{ FUpGunDeathmatchGameStateTags::WaitingPlayersToJoinTeam, L"GameState.Deathmatch.WaitingPlayersToJoinTeam" },
 		{ FUpGunDeathmatchGameStateTags::PostWaitingPlayersToJoinTeam, L"GameState.Deathmatch.PostWaitingPlayersToJoinTeam" },
 		{ FUpGunDeathmatchGameStateTags::TeamSelection, L"GameState.Deathmatch.TeamSelection" },

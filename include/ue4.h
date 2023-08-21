@@ -289,6 +289,10 @@ namespace upgun {
 		};
 
 		enum class FUpGunDeathmatchGameStateTags {
+			Started,
+			EnteringMap,
+			WaitingToStart,
+			Finished,
 			WaitingPlayersToJoinTeam,
 			PostWaitingPlayersToJoinTeam,
 			TeamSelection,
