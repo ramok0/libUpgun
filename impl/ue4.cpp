@@ -1,4 +1,5 @@
 #include "../include/libupgun.hpp"
+#include <map>
 
 upgun::ue4::FUObjectItem* upgun::ue4::TUObjectArray::GetObjectPtr(int32 Index)
 {
@@ -26,4 +27,28 @@ upgun::ue4::TArray<upgun::ue4::FUpGunInventoryItem> upgun::ue4::UpGunInventorySu
 	subsystem.ProcessEvent(Function, &result);
 
 	return result;
+}
+
+upgun::ue4::FUpGunDeathmatchGameStateTags upgun::ue4::StringToGameStateTags(const std::wstring in)
+{
+	const std::map<FUpGunDeathmatchGameStateTags, const wchar_t*> EnumToString {
+		{ FUpGunDeathmatchGameStateTags::WaitingPlayersToJoinTeam, L"GameState.Deathmatch.WaitingPlayersToJoinTeam" },
+		{ FUpGunDeathmatchGameStateTags::PostWaitingPlayersToJoinTeam, L"GameState.Deathmatch.PostWaitingPlayersToJoinTeam" },
+		{ FUpGunDeathmatchGameStateTags::TeamSelection, L"GameState.Deathmatch.TeamSelection" },
+		{ FUpGunDeathmatchGameStateTags::PickingSkill, L"GameState.Deathmatch.PickingSkill" },
+		{ FUpGunDeathmatchGameStateTags::InProgress, L"GameState.Deathmatch.InProgress" },
+		{ FUpGunDeathmatchGameStateTags::RoundFinished, L"GameState.Deathmatch.RoundFinished" },
+	};
+
+	auto it = std::find_if(EnumToString.begin(), EnumToString.end(), [in](std::pair<FUpGunDeathmatchGameStateTags, const wchar_t*> item)
+		{
+			return item.second == in;
+		});
+	
+	if (it != EnumToString.end())
+	{
+		return it->first;
+	}
+
+	return FUpGunDeathmatchGameStateTags::UNKNOWN;
 }

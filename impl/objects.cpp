@@ -14,7 +14,7 @@ uint16 upgun::UClass::get_offset(const std::wstring PropertyName)
 	return 0;
 }
 
-bool upgun::UObject::IsAInternal(UClass* ClassPrivate)
+bool upgun::UObject::IsAInternal(UClass* ClassPrivate) 
 {
 	for (UClass currentClass = this->get_class_private().Cast<UClass>(); currentClass; currentClass = UClass((uintptr)currentClass.get_raw_pointer()->SuperStruct))
 	{

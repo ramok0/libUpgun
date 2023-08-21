@@ -36,12 +36,12 @@ void upgun::Game::ProcessEvent(UObject object, UObject function, void* params)
 	//reinterpret_cast<void(__fastcall*)(void*, void*, void*)>(this->m_ProcessEvent)((void*)object.get_address(), (void*)function.get_address(), params);
 }
 
-const std::wstring upgun::ue4::FName::ToString(void)
+const std::wstring upgun::ue4::FName::ToString(void) const
 {
 	ue4::FString out;
 
 	//const ue4::FString* temp = reinterpret_cast<ue4::FString * (__fastcall*)(FName*, ue4::FString*)>(FNameToString)(this, &out);
-	const ue4::FString* temp = (const ue4::FString*)native::FNameToString(this, &out);
+	const ue4::FString* temp = (const ue4::FString*)native::FNameToString((void*)this, &out);
 	if (!temp) return std::wstring();
 
 	const std::wstring result = out.ToString();
