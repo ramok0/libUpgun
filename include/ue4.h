@@ -28,7 +28,7 @@ namespace upgun {
 				return this->ComparisonIndex != 0;
 			}
 
-			const std::wstring ToString(void);
+			const std::wstring ToString(void) const;
 		};
 
 		//https://docs.unrealengine.com/4.27/en-US/API/Runtime/CoreUObject/UObject/UObjectBase/
@@ -287,6 +287,19 @@ namespace upgun {
 				return this->RowName.ComparisonIndex == other.ComparisonIndex;
 			}
 		};
+
+		enum class FUpGunDeathmatchGameStateTags {
+			WaitingPlayersToJoinTeam,
+			PostWaitingPlayersToJoinTeam,
+			TeamSelection,
+			PickingSkill,
+			InProgress,
+			RoundFinished,
+			UNKNOWN
+		};
+
+		//upgun::ue4::FUpGunDeathmatchGameStateTags upgun::ue4::StringToGameStateTags(const std::wstring in)
+		FUpGunDeathmatchGameStateTags StringToGameStateTags(const std::wstring in);
 
 		enum class ESpawnActorCollisionHandlingMethod : uint8
 		{
