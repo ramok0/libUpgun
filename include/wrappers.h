@@ -157,31 +157,38 @@ namespace upgun {
 
 		uint16 GetOffset(const std::wstring PropertyName);
 
-		ReflectedObject Get(const wchar_t* PropertyName)
+		template <typename T>
+		T* GetPointer(const wchar_t* PropertyName)
 		{
 			if (*this) {
 				uint16 Offset = this->GetOffset(PropertyName);
 				uintptr Base = this->get_address();
 
 				if (!Offset) {
-					return ReflectedObject(0);
+					return nullptr;
 				}
-				void* Address = *(void**)(Base + Offset);
 
-				return ReflectedObject((uintptr)Address);
+				return reinterpret_cast<T*>(Base + Offset);
 			}
 
-			return ReflectedObject(0);
+			return nullptr;
+		}
+
+		ReflectedObject Get(const wchar_t* PropertyName)
+		{
+			uintptr* Address;
+			if (!(Address = this->GetPointer<uintptr>(PropertyName)))
+			{
+				return ReflectedObject(0);
+			}
+
+			return ReflectedObject(*Address);
 		}
 
 		template <typename T>
 		bool write(const wchar_t* PropertyName, T buffer) {
-			if (!*this) return false;
-
-			uint16 Offset = this->GetOffset(PropertyName);
-			uintptr Base = this->get_address();
-
-			T* Address = (T*)(Base + Offset);
+			T* Address = this->GetPointer<T>(PropertyName);
+			if (!Address) return false;
 
 			*Address = buffer;
 
@@ -191,20 +198,11 @@ namespace upgun {
 		template <typename T>
 		T GetAs(const wchar_t* PropertyName)
 		{
-			if (*this) {
-				uint16 Offset = this->GetOffset(PropertyName);
-				uintptr Base = this->get_address();
+			T* Address = this->GetPointer<T>(PropertyName);
 
-				if (!Offset) {
-					return T(0);
-				}
-				T* Address = (T*)(Base + Offset);
+			if (!Address) return T{ 0 };
 
-		
-				return *Address;
-			}
-
-			return T(0);
+			return *Address;
 		}
 	};
 
