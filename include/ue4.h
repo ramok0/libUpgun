@@ -252,6 +252,16 @@ namespace upgun {
 			static UClass* StaticClass();
 		};
 
+		struct AUpGunGameStateBase
+		{
+			static UClass* StaticClass();
+		};	
+		
+		struct AUpGunLobbyGameState
+		{
+			static UClass* StaticClass();
+		};
+
 		struct FUpGunInventoryItem {
 			struct FUpGunOSSItemId InstanceID; // 0x00(0x10)
 			struct FUpGunOSSItemId ItemId; // 0x10(0x10)

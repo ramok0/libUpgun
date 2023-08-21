@@ -49,3 +49,17 @@ upgun::UClass* upgun::ue4::AUpGunBasePlayerState::StaticClass()
 	GET_STATIC_CLASS(L"Class /Script/UpGun.UpGunBasePlayerState");
 	return &staticClass;
 }
+
+upgun::UClass* upgun::ue4::AUpGunGameStateBase::StaticClass()
+{
+	GET_STATIC_CLASS(L"Class /Script/UpGun.UpGunGameStateBase");
+	return &staticClass;
+}
+
+
+upgun::UClass* upgun::ue4::AUpGunLobbyGameState::StaticClass()
+{
+	GET_STATIC_CLASS(L"Class /Script/UpGun.UpGunLobbyGameState");
+	return &staticClass;
+}
+
