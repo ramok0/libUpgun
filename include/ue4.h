@@ -135,6 +135,11 @@ namespace upgun {
 			const std::wstring ToString(void);
 		};
 
+		struct FText
+		{
+			char data[0x18];
+		};
+
 		//https://docs.unrealengine.com/4.27/en-US/API/Runtime/CoreUObject/UObject/UField/
 		struct UField : public UObject {
 			UField* Next;
@@ -175,6 +180,18 @@ namespace upgun {
 			FString inString;
 			FName ReturnValue;
 		};		
+
+		struct UKismetTextLibrary_Conv_StringToText_Params
+		{
+			struct FString                                     inString;                                                 // (Parm, ZeroConstructor)
+			struct FText                                       ReturnValue;                                              // (Parm, OutParm, ReturnParm)
+		};
+
+		struct AUpGunGameModeBase_KickPlayer_Params
+		{
+			void* PlayerState;
+			struct FText* Reason;
+		};
 		
 		struct UKismetMaterialLibrary_CreateDynamicMaterialInstance_Params
 		{
@@ -237,6 +254,12 @@ namespace upgun {
 			static UClass* StaticClass();
 		};
 
+		struct KismetTextLibrary {
+			static FText StringToText(const FString inString);
+
+			static UClass* StaticClass();
+		};
+
 		struct KismetMaterialLibrary {
 			static UMaterialInstanceDynamic* CreateDynamicMaterialInstance(UObject* WorldContextObject, struct UMaterialInterface* Parent, FName OptionalName, EMIDCreationFlags CreationFlags);
 
@@ -256,8 +279,18 @@ namespace upgun {
 		{
 			static UClass* StaticClass();
 		};	
+			
+		struct AGameStateBase
+		{
+			static UClass* StaticClass();
+		};	
 		
 		struct AUpGunLobbyGameState
+		{
+			static UClass* StaticClass();
+		};	
+		
+		struct AUpGunDeathmatchSettings
 		{
 			static UClass* StaticClass();
 		};

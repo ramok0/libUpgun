@@ -58,3 +58,17 @@ upgun::UMaterialInstanceDynamic* upgun::ue4::KismetMaterialLibrary::CreateDynami
 
 	return params.ReturnValue;
 }
+
+upgun::ue4::FText upgun::ue4::KismetTextLibrary::StringToText(const FString inString)
+{
+	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetTextLibrary.Conv_StringToText");
+	upgun::UObject library = Game::GetSingleton().get_kismet_text_library();
+
+	UKismetTextLibrary_Conv_StringToText_Params params;
+
+	params.inString = inString;
+
+	library.ProcessEvent(Function, &params);
+
+	return params.ReturnValue;
+}
