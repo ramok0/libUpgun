@@ -5,6 +5,14 @@
 #include "types.h"
 #include "wrappers.h"
 
+struct UpGunModDescriptor {
+	const char* signature;
+	const char* modname;
+	const char* author;
+	float version;
+	int revision;
+};
+
 #define STATIC_OBJECT_GETTER(fnName, ptrName, objectName) \
 	 UObject fnName() { \
 		if(!ptrName)\
@@ -14,7 +22,22 @@
 		return ptrName; \
 	}	
 
+#define CREATE_MOD(iModName, iAuthor, iVersion) \
+	__declspec(dllexport) UpGunModDescriptor GetUpGunModDescriptor() { \
+		UpGunModDescriptor mod; \
+		mod.revision = 1; \
+		mod.version = iVersion; \
+		mod.author = iAuthor; \
+		mod.modname = iModName; \
+		mod.signature = "upgunmod"; \
+		return mod;\
+	};
+
 namespace upgun {
+	namespace helpers {
+		bool IsAttachedToUpGun(void);
+	}
+
 	namespace patterns {
 		constexpr const char* OBJECTS = "48 8B 05 ? ? ? ? 48 8B 0C C8 48 8D 04 D1 EB"; //TUObjectArray ObjObjects;
 		constexpr const char* FNAMETOSTRING = "48 89 5C 24 ? 55 56 57 48 8B EC 48 83 EC 30 8B 01 48 8B F1 44 8B 49 04"; //FName::ToString
@@ -55,6 +78,10 @@ namespace upgun {
 		void* Malloc(size_t size);
 		void* Realloc(void* Block, size_t size);
 
+		const void* GetProcessEvent() const {
+			return native::ProcessEvent;
+		}
+
 		void ProcessEvent(UObject object, UObject function, void* params);
 
 		ObjectArray GetObjects() {
@@ -63,6 +90,7 @@ namespace upgun {
 
 		STATIC_OBJECT_GETTER(get_kismet_rendering_library, this->m_KismetRenderingLibrary, L"KismetRenderingLibrary /Script/Engine.Default__KismetRenderingLibrary");
 		STATIC_OBJECT_GETTER(get_kismet_string_library, this->m_KismetStringLibrary, L"KismetStringLibrary /Script/Engine.Default__KismetStringLibrary");
+		STATIC_OBJECT_GETTER(get_kismet_text_library, this->m_KismetTextLibrary, L"KismetTextLibrary /Script/Engine.Default__KismetTextLibrary");
 		STATIC_OBJECT_GETTER(get_kismet_material_library, this->m_KismetMaterialLibrary, L"KismetMaterialLibrary /Script/Engine.Default__KismetMaterialLibrary");
 		STATIC_OBJECT_GETTER(get_upgun_inventory_subsystem, this->m_UpGunInventorySubsystem, L"UpGunInventorySubsystem /Engine/Transient");
 		STATIC_OBJECT_GETTER(get_upgun_cosmetic_subsystem, this->m_UpGunCosmeticSubsystem, L"UpGunCosmeticSubsystem /Engine/Transient");
@@ -73,6 +101,7 @@ namespace upgun {
 
 		UObject m_KismetRenderingLibrary;
 		UObject m_KismetStringLibrary;
+		UObject m_KismetTextLibrary;
 		UObject m_KismetMaterialLibrary;
 		UObject m_UpGunInventorySubsystem;
 		UObject m_UpGunCosmeticSubsystem;
