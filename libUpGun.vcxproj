@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="impl\helpers.cpp" />
     <ClCompile Include="impl\kismet.cpp" />
     <ClCompile Include="impl\libupgun.cpp" />
     <ClCompile Include="impl\native.cpp" />

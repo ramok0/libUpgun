@@ -6,11 +6,14 @@
 #include "wrappers.h"
 
 struct UpGunModDescriptor {
-	const char* signature;
-	const char* modname;
-	const char* author;
-	float version;
+	char signature[256];
 	int revision;
+	char modname[256];
+	char author[256];
+	char version_firstpart;
+	char version_secondpart;
+	char version_thirdpart;
+	char description[2048];
 };
 
 #define STATIC_OBJECT_GETTER(fnName, ptrName, objectName) \
@@ -22,16 +25,20 @@ struct UpGunModDescriptor {
 		return ptrName; \
 	}	
 
-#define CREATE_MOD(iModName, iAuthor, iVersion) \
-	__declspec(dllexport) UpGunModDescriptor GetUpGunModDescriptor() { \
-		UpGunModDescriptor mod; \
-		mod.revision = 1; \
-		mod.version = iVersion; \
-		mod.author = iAuthor; \
-		mod.modname = iModName; \
-		mod.signature = "upgunmod"; \
-		return mod;\
-	};
+#define CREATE_MOD(iModName, iAuthor, iVersionFirst, iVersionSecond, iVersionThird, iDescription) \
+    __declspec(dllexport) UpGunModDescriptor* GetUpGunModDescriptor() { \
+        static UpGunModDescriptor mod; \
+        mod.revision = 1; \
+		mod.version_firstpart = (char)iVersionFirst; \
+		mod.version_secondpart = (char)iVersionSecond; \
+		mod.version_thirdpart = (char)iVersionThird; \
+		strcpy_s(mod.author, sizeof(mod.author), iAuthor); \
+		strcpy_s(mod.modname, sizeof(mod.modname), iModName); \
+		strcpy_s(mod.signature, sizeof(mod.signature), "upgunmod"); \
+		if(iDescription) \
+			strcpy_s(mod.description, sizeof(mod.description), iDescription); \
+        return &mod; \
+    }
 
 namespace upgun {
 	namespace helpers {
