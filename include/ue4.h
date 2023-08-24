@@ -266,6 +266,13 @@ namespace upgun {
 			static UClass* StaticClass();
 		};
 
+		struct KismetSystemLibrary {
+			static void ExecuteConsoleCommand(FString Command);
+
+
+			static UClass* StaticClass();
+		};
+
 		struct FUpGunOSSItemId {
 			struct FString ID; // 0x00(0x10)
 		};

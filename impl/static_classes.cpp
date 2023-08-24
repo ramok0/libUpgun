@@ -80,3 +80,9 @@ upgun::UClass* upgun::ue4::KismetTextLibrary::StaticClass()
 	GET_STATIC_CLASS(L"Class /Script/Engine.KismetTextLibrary");
 	return &staticClass;
 }
+
+upgun::UClass* upgun::ue4::KismetSystemLibrary::StaticClass()
+{
+	GET_STATIC_CLASS(L"Class /Script/Engine.KismetSystemLibrary");
+	return &staticClass;
+}

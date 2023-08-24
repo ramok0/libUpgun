@@ -72,3 +72,22 @@ upgun::ue4::FText upgun::ue4::KismetTextLibrary::StringToText(const FString inSt
 
 	return params.ReturnValue;
 }
+
+void upgun::ue4::KismetSystemLibrary::ExecuteConsoleCommand(FString Command)
+{
+	upgun::UWorld world = Game::GetSingleton().GetWorld();
+
+	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetSystemLibrary.ExecuteConsoleCommand");
+
+	struct {
+		upgun::ue4::UObject* World;
+		FString* Command;
+		upgun::ue4::UObject* PlayerController;
+	} params;
+
+	params.World = (upgun::ue4::UObject*)world.get_address();
+	params.PlayerController = nullptr;
+	params.Command = &Command;
+
+	Game::GetSingleton().get_kismet_system_library().ProcessEvent(Function, &params);
+}
