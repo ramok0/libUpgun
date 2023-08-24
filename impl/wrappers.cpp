@@ -34,3 +34,37 @@ void upgun::APlayerController::SetMouseSensitivity(float MouseSensitivity)
 
 	this->ProcessEvent(Function, &MouseSensitivity);
 }
+
+upgun::UObject upgun::GameplayStatics::SpawnObject(UObject Object, UObject Outer)
+{
+	ue4::UObject* result = ue4::UGameplayStatics::SpawnObject((ue4::UObject*)Object.get_address(), (ue4::UObject*)Outer.get_address());
+	
+	return upgun::UObject((uintptr)result);
+}
+
+void upgun::APlayerState::KickPlayer(ue4::FString Message)
+{
+	if (!this->IsA<ue4::AUpGunBasePlayerState>()) {
+		std::cout << "This PlayerState is not AUpGunBasePlayerState" << std::endl;
+		return;
+	}
+
+	upgun::ReflectedObject GameMode = Game::GetSingleton().GetWorld().Get(L"AuthorityGameMode");
+
+	if (!GameMode) {
+		std::cout << "Failed to get GameMode" << std::endl;
+		return;
+	}
+
+	ue4::FText reasontext = upgun::ue4::KismetTextLibrary::StringToText(Message);
+
+	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/UpGun.UpGunGameModeBase.KickPlayer");
+
+	ue4::AUpGunGameModeBase_KickPlayer_Params params;
+	ZeroMemory(&params, sizeof(params));
+
+	params.PlayerState = (void*)this->get_address();
+	params.Reason = reasontext;
+
+	GameMode.ProcessEvent(Function, &params);
+}

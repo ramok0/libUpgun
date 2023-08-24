@@ -106,6 +106,13 @@ namespace upgun {
 		}
 	};
 
+	struct APlayerState : public UObject {
+	public:
+		APlayerState(uintptr address) : UObject(address) { };
+
+		void KickPlayer(ue4::FString Message);
+	};
+
 	struct AActor : public UObject {
 	public:
 		AActor(uintptr address) : UObject(address) { };
@@ -210,6 +217,10 @@ namespace upgun {
 		UWorld(uintptr address) : ReflectedObject(address) { };
 
 		UObject SpawnActor(UClass Class, FTransform* Transform, const ue4::FActorSpawnParameters& SpawnParameters);
+	};
+
+	struct GameplayStatics {
+		static UObject SpawnObject(UObject Object, UObject Outer);
 	};
 
 	struct UMaterialInstanceDynamic : UObject {

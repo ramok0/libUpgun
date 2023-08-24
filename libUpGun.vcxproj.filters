@@ -39,6 +39,9 @@
     <ClCompile Include="impl\helpers.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="impl\gameplaystatics.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\libupgun.hpp">
