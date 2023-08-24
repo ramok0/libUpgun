@@ -1,45 +1,36 @@
 #include "../include/libupgun.hpp"
 #include "../include/native.h"
 
-upgun::ue4::UTexture2D* upgun::ue4::KismetRenderingLibrary::ImportFileAsTexture2D(const wchar_t* Filename)
+upgun::ue4::UTexture2D* upgun::ue4::KismetRenderingLibrary::ImportFileAsTexture2D(const std::wstring Filename)
 {
 	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetRenderingLibrary.ImportFileAsTexture2D", true);
 
-	upgun::UObject library = Game::GetSingleton().get_kismet_rendering_library();
 
-	if (library)
-	{
-		UKismetRenderingLibrary_ImportFileAsTexture2D_Params params;
 
-		upgun::ReflectedObject World = Game::GetSingleton().GetWorld();
-		
-		params.WorldContextObject = reinterpret_cast<upgun::ue4::UObject*>(World.get_address());
-		params.Filename = Filename;
-		library.ProcessEvent(Function, &params);
+	UKismetRenderingLibrary_ImportFileAsTexture2D_Params params;
 
-		return (upgun::ue4::UTexture2D*)params.ReturnValue;
-	}
-	
-	return nullptr;
+	upgun::ReflectedObject World = Game::GetSingleton().GetWorld();
+
+	params.WorldContextObject = reinterpret_cast<upgun::ue4::UObject*>(World.get_address());
+	params.Filename = Filename.c_str();
+	ue4::KismetRenderingLibrary::StaticClass()->ProcessEvent(Function, &params);
+
+	return (upgun::ue4::UTexture2D*)params.ReturnValue;
 }
 
-upgun::ue4::FName upgun::ue4::KismetStringLibrary::StringToName(const wchar_t* String)
+upgun::ue4::FName upgun::ue4::KismetStringLibrary::StringToName(const std::wstring String)
 {
-	upgun::UObject library = Game::GetSingleton().get_kismet_string_library();
-
 	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetStringLibrary.Conv_StringToName");
 
-	if (library)
-	{
+
 		UKismetStringLibrary_Conv_StringToName_Params params;
 
-		params.inString = String;
+		params.inString = String.c_str();
 
-		library.ProcessEvent(Function, &params);
+		KismetStringLibrary::StaticClass()->ProcessEvent(Function, &params);
 
 		return params.ReturnValue;
-	}
-
+	
 	return FName::Empty();
 }
 
@@ -53,22 +44,40 @@ upgun::UMaterialInstanceDynamic* upgun::ue4::KismetMaterialLibrary::CreateDynami
 	params.Parent = Parent;
 	params.WorldContextObject = (upgun::ue4::UObject*)WorldContextObject;
 
-	upgun::UObject materialLibrary = Game::GetSingleton().get_kismet_material_library();
-	materialLibrary.ProcessEvent(Function, &params);
+	
+	KismetMaterialLibrary::StaticClass()->ProcessEvent(Function, &params);
 
 	return params.ReturnValue;
 }
 
-upgun::ue4::FText upgun::ue4::KismetTextLibrary::StringToText(const FString inString)
+upgun::ue4::FText upgun::ue4::KismetTextLibrary::StringToText(FString inString)
 {
-	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetTextLibrary.Conv_StringToText");
-	upgun::UObject library = Game::GetSingleton().get_kismet_text_library();
+	upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetTextLibrary.Conv_StringToText");
 
-	UKismetTextLibrary_Conv_StringToText_Params params;
+	struct {
+		FString inString;
+		FText ReturnValue;
+	} params = { 0 };
 
 	params.inString = inString;
 
-	library.ProcessEvent(Function, &params);
+	KismetTextLibrary::StaticClass()->ProcessEvent(Function, &params);
+
+	return params.ReturnValue;
+}
+
+upgun::ue4::FString upgun::ue4::KismetTextLibrary::TextToString(FText inText)
+{
+	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetTextLibrary.Conv_TextToString");
+
+	struct {
+		FText text;
+		FString ReturnValue;
+	} params;
+
+	params.text = inText;
+
+	ue4::KismetTextLibrary::StaticClass()->ProcessEvent(Function, &params);
 
 	return params.ReturnValue;
 }
@@ -77,17 +86,21 @@ void upgun::ue4::KismetSystemLibrary::ExecuteConsoleCommand(FString Command)
 {
 	upgun::UWorld world = Game::GetSingleton().GetWorld();
 
-	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetSystemLibrary.ExecuteConsoleCommand");
+	static upgun::UObject FunctionObject = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetSystemLibrary.ExecuteConsoleCommand");
 
-	struct {
-		upgun::ue4::UObject* World;
-		FString* Command;
-		upgun::ue4::UObject* PlayerController;
-	} params;
+	ue4::UFunction* Function = reinterpret_cast<ue4::UFunction*>(FunctionObject.get_address());
 
-	params.World = (upgun::ue4::UObject*)world.get_address();
-	params.PlayerController = nullptr;
+	auto flags = Function->FunctionFlags;
+
+	Function->FunctionFlags |= 0x400;
+
+	UKismetSystemLibrary_ExecuteConsoleCommand_Params params;
+	params.WorldContextObject = reinterpret_cast<ue4::UObject*>(world.get_address());
 	params.Command = &Command;
+	params.SpecificPlayer = nullptr;
 
-	Game::GetSingleton().get_kismet_system_library().ProcessEvent(Function, &params);
+
+	//upgun::Game::GetSingleton().get_kismet_system_library().ProcessEvent(FunctionObject, &params);
+
+	Function->FunctionFlags = flags;
 }

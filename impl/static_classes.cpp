@@ -69,6 +69,12 @@ upgun::UClass* upgun::ue4::AUpGunDeathmatchSettings::StaticClass()
 	return &staticClass;
 }
 
+upgun::UClass* upgun::ue4::UUpGunDeathmatchCheatManager::StaticClass()
+{
+	GET_STATIC_CLASS(L"Class /Script/UpGun.UpGunDeathmatchCheatManager");
+	return &staticClass;
+}
+
 upgun::UClass* upgun::ue4::AGameStateBase::StaticClass()
 {
 	GET_STATIC_CLASS(L"Class /Script/Engine.GameStateBase");

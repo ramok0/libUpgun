@@ -89,25 +89,38 @@ namespace upgun {
 				return Data[Index];
 			}
 
+			void release()
+			{
+				Count = Max = 0;
+				native::FMemoryFree(this->Data);
+				this->Data = nullptr;
+			}
+
 			void push(T element)
 			{
-				int32 NewCount = Count + 1;
-				size_t NewSize = sizeof(T) * NewCount;
+				size_t NewSize = sizeof(T) * (Count+1);
 
-				this->Data = (T*)native::FMemoryRealloc(this->Data, NewSize, 32);
+				if (!this->Data)
+				{
+					Count = Max = 0;
+					this->Data = (T*)native::FMemoryMalloc(NewSize, 32);
+				}
+				else {
+					this->Data = (T*)native::FMemoryRealloc(this->Data, NewSize, 32);					
+				}
+
 				this->Data[Count] = element;
-
-				this->Count = NewCount;
+				this->Count++;
 				this->Max++;
 			}
 		};
 
 		struct FString : TArray<wchar_t> {
 		public:
-			//default constructor for nullallocated FString
-			FString() {
-				this->Data = nullptr;
-				this->Count = this->Max = 0;
+			inline FString() {};
+
+			FString(int i) {
+
 			}
 
 			FString(const wchar_t* other)
@@ -120,17 +133,6 @@ namespace upgun {
 				}
 			}
 
-			void set(const std::wstring str)
-			{
-				const wchar_t* data = str.data();
-				
-				for (unsigned int i = 0; i < str.size(); i++)
-				{
-					this->push(data[i]);
-				}
-
-				this->push(0x00);
-			}
 
 			const std::wstring ToString(void);
 		};
@@ -151,8 +153,13 @@ namespace upgun {
 			UStruct* SuperStruct;
 			UField* Children;
 			struct FField* ChildProperties;
+			char pad_1[0x58];
 
 			static UClass* StaticClass();
+		};
+
+		struct UFunction : UStruct {
+			uint16 FunctionFlags;
 		};
 
 		//https://docs.unrealengine.com/4.27/en-US/API/Runtime/CoreUObject/UObject/FField/
@@ -175,22 +182,23 @@ namespace upgun {
 			UObject* ReturnValue;
 		};
 
+		struct UKismetSystemLibrary_ExecuteConsoleCommand_Params
+		{
+			struct UObject* WorldContextObject;                                       // (Parm, ZeroConstructor, IsPlainOldData)
+			struct FString*                                     Command;                                                  // (Parm, ZeroConstructor)
+			struct APlayerController* SpecificPlayer;                                           // (Parm, ZeroConstructor, IsPlainOldData)
+		};
+
 		struct UKismetStringLibrary_Conv_StringToName_Params
 		{
 			FString inString;
 			FName ReturnValue;
 		};		
 
-		struct UKismetTextLibrary_Conv_StringToText_Params
-		{
-			struct FString                                     inString;                                                 // (Parm, ZeroConstructor)
-			struct FText                                       ReturnValue;                                              // (Parm, OutParm, ReturnParm)
-		};
-
 		struct AUpGunGameModeBase_KickPlayer_Params
 		{
 			void* PlayerState;
-			struct FText* Reason;
+			struct FText Reason;
 		};
 		
 		struct UKismetMaterialLibrary_CreateDynamicMaterialInstance_Params
@@ -206,6 +214,13 @@ namespace upgun {
 		{
 			FName ParameterName;
 			UObject* Value;
+		};
+
+		struct SpawnObject_Params
+		{
+			UObject* ObjectClass;
+			UObject* Outer;
+			UObject* ReturnValue;
 		};
 
 		template <typename Key, typename Value>
@@ -243,19 +258,20 @@ namespace upgun {
 		};
 
 		struct KismetRenderingLibrary {
-			static struct UTexture2D* ImportFileAsTexture2D(const wchar_t* Filename);
+			static struct UTexture2D* ImportFileAsTexture2D(const std::wstring Filename);
 
 			static UClass* StaticClass();
 		};
 
 		struct KismetStringLibrary {
-			static FName StringToName(const wchar_t* String);
+			static FName StringToName(const std::wstring String);
 
 			static UClass* StaticClass();
 		};
 
 		struct KismetTextLibrary {
-			static FText StringToText(const FString inString);
+			static FText StringToText(FString inString);
+			static FString TextToString(FText inText);
 
 			static UClass* StaticClass();
 		};
@@ -269,14 +285,23 @@ namespace upgun {
 		struct KismetSystemLibrary {
 			static void ExecuteConsoleCommand(FString Command);
 
-
 			static UClass* StaticClass();
+		};
+
+		struct UGameplayStatics
+		{
+			static struct UObject* SpawnObject(struct UObject* ObjectClass, struct UObject* Outer);
 		};
 
 		struct FUpGunOSSItemId {
 			struct FString ID; // 0x00(0x10)
 		};
 
+		struct UUpGunDeathmatchCheatManager
+		{
+			static UClass* StaticClass();
+		};	
+		
 		struct AUpGunDeathmatchGameMode
 		{
 			static UClass* StaticClass();
@@ -355,6 +380,7 @@ namespace upgun {
 		FUpGunDeathmatchGameStateTags StringToGameStateTags(const std::wstring in);
 
 		struct AUpGunBasePlayerState {
+
 			static UClass* StaticClass();
 		};
 
@@ -409,6 +435,6 @@ namespace upgun {
 		static_assert(offsetof(FField, Next) == 0x20);
 		static_assert(offsetof(FField, NamePrivate) == 0x28);
 		static_assert(offsetof(FProperty, Offset) == 0x4C);
-
+		static_assert(offsetof(UFunction, FunctionFlags) == 0xb0);
 	}
 }
