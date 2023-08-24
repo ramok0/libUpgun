@@ -95,9 +95,11 @@ namespace upgun {
 			return this->m_ObjectArray;
 		}
 
+		STATIC_OBJECT_GETTER(get_kismet_system_library, this->m_KismetSystemLibrary, L"KismetSystemLibrary /Script/Engine.Default__KismetSystemLibrary");
 		STATIC_OBJECT_GETTER(get_kismet_rendering_library, this->m_KismetRenderingLibrary, L"KismetRenderingLibrary /Script/Engine.Default__KismetRenderingLibrary");
 		STATIC_OBJECT_GETTER(get_kismet_string_library, this->m_KismetStringLibrary, L"KismetStringLibrary /Script/Engine.Default__KismetStringLibrary");
 		STATIC_OBJECT_GETTER(get_kismet_text_library, this->m_KismetTextLibrary, L"KismetTextLibrary /Script/Engine.Default__KismetTextLibrary");
+		STATIC_OBJECT_GETTER(get_kismet_system_library, this->m_KismetTextLibrary, L"KismetTextLibrary /Script/Engine.Default__KismetTextLibrary");
 		STATIC_OBJECT_GETTER(get_kismet_material_library, this->m_KismetMaterialLibrary, L"KismetMaterialLibrary /Script/Engine.Default__KismetMaterialLibrary");
 		STATIC_OBJECT_GETTER(get_upgun_inventory_subsystem, this->m_UpGunInventorySubsystem, L"UpGunInventorySubsystem /Engine/Transient");
 		STATIC_OBJECT_GETTER(get_upgun_cosmetic_subsystem, this->m_UpGunCosmeticSubsystem, L"UpGunCosmeticSubsystem /Engine/Transient");
@@ -106,6 +108,7 @@ namespace upgun {
 		//find addresses for objects, fnametostr, free and engine, throw if it fails
 		void find_patterns();
 
+		UObject m_KismetSystemLibrary;
 		UObject m_KismetRenderingLibrary;
 		UObject m_KismetStringLibrary;
 		UObject m_KismetTextLibrary;
