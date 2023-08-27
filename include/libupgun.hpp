@@ -43,6 +43,12 @@ struct UpGunModDescriptor {
 namespace upgun {
 	namespace helpers {
 		bool IsAttachedToUpGun(void);
+
+		bool IsConsoleBuilt(void);
+		bool IsCheatManagerBuilt(void);
+
+		void BuildUE4Console(void);
+		void BuildUE4CheatMananager(void);
 	}
 
 	namespace patterns {
