@@ -75,6 +75,11 @@ namespace upgun {
 			ue4::FUObjectItem* GetObjectPtr(int32 Index);
 		};
 
+		struct FKey {
+			struct FName KeyName; // 0x00(0x08)
+			char pad_8[0x10]; // 0x08(0x10)
+		};
+
 		//https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/TArrays/
 		template <typename T>
 		struct TArray {
@@ -84,9 +89,12 @@ namespace upgun {
 
 			T operator[](int32 Index)
 			{
-				if (Index >= Count) return T(0);
+				T buffer{};
 
-				return Data[Index];
+				if (Index >= Count) return buffer;
+
+				buffer = Data[Index];
+				return buffer;
 			}
 
 			void release()
@@ -94,6 +102,18 @@ namespace upgun {
 				Count = Max = 0;
 				native::FMemoryFree(this->Data);
 				this->Data = nullptr;
+			}
+
+			bool contains(T element)
+			{
+				for (int i = 0; i < Count; i++) {
+					if ((*this)[i] == element)
+					{
+						return true;
+					}
+				}
+
+				return false;
 			}
 
 			void push(T element)
@@ -133,6 +153,13 @@ namespace upgun {
 				}
 			}
 
+			bool operator==(FString other)
+			{
+				if (Data == other.Data) return true;
+
+				return wcscmp(Data, other.Data) == 0;
+			}
+
 
 			const std::wstring ToString(void);
 		};
@@ -140,6 +167,32 @@ namespace upgun {
 		struct FText
 		{
 			char data[0x18];
+		};
+
+		struct FUpGunChatRoomId {
+			char ID; // 0x00(0x01)
+		};
+
+		struct FUpGunChatRoom {
+			struct FUpGunChatRoomId ID; // 0x00(0x01)
+			char pad_1[0x7]; // 0x01(0x07)
+			struct FString Name; // 0x08(0x10)
+			struct TArray<struct AUpGunBasePlayerState*> Players; // 0x18(0x10)
+		};
+
+		enum class EUpGunChatMessageSenderType : uint8 {
+			System = 0,
+			Player = 1,
+			EUpGunChatMessageSenderType_MAX = 2
+		};
+
+		struct FUpGunChatMessage {
+			enum class EUpGunChatMessageSenderType SenderType; // 0x00(0x01)
+			char pad_1[0x7]; // 0x01(0x07)
+			struct AUpGunBasePlayerState* Sender; // 0x08(0x08)
+			struct FUpGunChatRoomId Room; // 0x10(0x01)
+			char pad_11[0x7]; // 0x11(0x07)
+			struct FString Message; // 0x18(0x10)
 		};
 
 		//https://docs.unrealengine.com/4.27/en-US/API/Runtime/CoreUObject/UObject/UField/
@@ -185,7 +238,7 @@ namespace upgun {
 		struct UKismetSystemLibrary_ExecuteConsoleCommand_Params
 		{
 			struct UObject* WorldContextObject;                                       // (Parm, ZeroConstructor, IsPlainOldData)
-			struct FString*                                     Command;                                                  // (Parm, ZeroConstructor)
+			struct FString                                     Command;                                                  // (Parm, ZeroConstructor)
 			struct APlayerController* SpecificPlayer;                                           // (Parm, ZeroConstructor, IsPlainOldData)
 		};
 
@@ -246,8 +299,10 @@ namespace upgun {
 
 			Value Find(Key in)
 			{
-				for (auto& pair : Pairs)
+				for (int i = 0; i < Pairs.Count; i++)
 				{
+					auto pair = Pairs[i];
+
 					if (in == pair.key) {
 						return pair.value;
 					}
@@ -291,6 +346,18 @@ namespace upgun {
 		struct UGameplayStatics
 		{
 			static struct UObject* SpawnObject(struct UObject* ObjectClass, struct UObject* Outer);
+		};
+
+		enum class EUpGunCosmeticType : uint8 {
+			Unknown = 0,
+			Armor = 1,
+			Hat = 2,
+			Screen = 3,
+			Rifle = 4,
+			Knife = 5,
+			Emote = 6,
+			Equipment = 7,
+			EUpGunCosmeticType_MAX = 8
 		};
 
 		struct FUpGunOSSItemId {
@@ -360,6 +427,11 @@ namespace upgun {
 			bool operator==(FName other)
 			{
 				return this->RowName.ComparisonIndex == other.ComparisonIndex;
+			}
+
+			bool operator==(FDataTableRowHandle other)
+			{
+				return this->RowName.ComparisonIndex == other.RowName.ComparisonIndex;
 			}
 		};
 
