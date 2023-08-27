@@ -157,6 +157,7 @@
     <ClCompile Include="impl\objects.cpp" />
     <ClCompile Include="impl\static_classes.cpp" />
     <ClCompile Include="impl\ue4.cpp" />
+    <ClCompile Include="impl\upgun.cpp" />
     <ClCompile Include="impl\wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>

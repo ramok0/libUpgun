@@ -6,6 +6,7 @@ upgun::ue4::UTexture2D* upgun::ue4::KismetRenderingLibrary::ImportFileAsTexture2
 	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetRenderingLibrary.ImportFileAsTexture2D", true);
 
 	UKismetRenderingLibrary_ImportFileAsTexture2D_Params params;
+	ZeroMemory(&params, sizeof(params));
 
 	upgun::ReflectedObject World = Game::GetSingleton().GetWorld();
 
@@ -22,14 +23,13 @@ upgun::ue4::FName upgun::ue4::KismetStringLibrary::StringToName(const std::wstri
 
 
 	UKismetStringLibrary_Conv_StringToName_Params params = { 0 };
+	ZeroMemory(&params, sizeof(params));
 
-		params.inString = String.c_str();
+	params.inString = String.c_str();
 
-		KismetStringLibrary::StaticClass()->ProcessEvent(Function, &params);
+	KismetStringLibrary::StaticClass()->ProcessEvent(Function, &params);
 
-		return params.ReturnValue;
-	
-	return FName::Empty();
+	return params.ReturnValue;
 }
 
 upgun::UMaterialInstanceDynamic* upgun::ue4::KismetMaterialLibrary::CreateDynamicMaterialInstance(UObject* WorldContextObject, UMaterialInterface* Parent, FName OptionalName, EMIDCreationFlags CreationFlags)
@@ -37,6 +37,7 @@ upgun::UMaterialInstanceDynamic* upgun::ue4::KismetMaterialLibrary::CreateDynami
 	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.PrimitiveComponent.CreateDynamicMaterialInstance");
 
 	UKismetMaterialLibrary_CreateDynamicMaterialInstance_Params params;
+	ZeroMemory(&params, sizeof(params));
 	params.CreationFlags = CreationFlags;
 	params.OptionalName = OptionalName;
 	params.Parent = Parent;
@@ -56,6 +57,7 @@ upgun::ue4::FText upgun::ue4::KismetTextLibrary::StringToText(FString inString)
 		FString inString;
 		FText ReturnValue;
 	} params = { 0 };
+	ZeroMemory(&params, sizeof(params));
 
 	params.inString = inString;
 
