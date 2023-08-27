@@ -125,6 +125,7 @@ namespace upgun {
 		APlayerController(uintptr address) : AActor(address) {};
 
 		void SetMouseSensitivity(float MouseSensitivity);
+		void SendChatMessage(const wchar_t* Message, ue4::FUpGunChatRoomId roomId, bool system = true);
 	};
 
 	struct ObjectArray {
@@ -228,5 +229,20 @@ namespace upgun {
 		UMaterialInstanceDynamic(uintptr address) : UObject(address) { };
 
 		void SetTextureParameterValue(ue4::FName ParameterName, void* Value);
+	};
+
+	struct UpGunNormalizedCosmetic {
+		std::wstring Name;
+		std::wstring Id;
+		ue4::EUpGunCosmeticType Type;
+		bool isDefaultCosmetic;
+		std::wstring InternalDTName;
+		void* DataTable;
+ 	};
+
+	struct CosmeticSubsystem {
+		static std::vector<std::wstring> get_default_cosmetics_names(void);
+
+		static std::vector<UpGunNormalizedCosmetic> get_cosmetics(void);
 	};
 }

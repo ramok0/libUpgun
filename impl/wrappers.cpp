@@ -8,7 +8,7 @@ upgun::APlayerController upgun::Game::GetLocalPlayer()
 
 void upgun::UMaterialInstanceDynamic::SetTextureParameterValue(ue4::FName ParameterName, void* Value)
 {
-	upgun::ue4::UMaterialInstanceDynamic_SetTextureParameterValue_Params params;
+	upgun::ue4::UMaterialInstanceDynamic_SetTextureParameterValue_Params params = { 0 };
 	params.ParameterName = ParameterName;
 	params.Value = (upgun::ue4::UObject*)Value;
 
@@ -33,6 +33,26 @@ void upgun::APlayerController::SetMouseSensitivity(float MouseSensitivity)
 	static UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/UpGun.UpGunBasePlayerController.SetMouseSensitivity");
 
 	this->ProcessEvent(Function, &MouseSensitivity);
+}
+
+void upgun::APlayerController::SendChatMessage(const wchar_t* Message, ue4::FUpGunChatRoomId roomId, bool system)
+{
+	static UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/UpGun.UpGunBasePlayerController.SendMessage");
+
+	UObject PlayerState = this->Cast<ReflectedObject>().Get(L"PlayerState");
+	if (!PlayerState) return;
+
+	ue4::EUpGunChatMessageSenderType senderType = system ? ue4::EUpGunChatMessageSenderType::System : ue4::EUpGunChatMessageSenderType::Player;
+	
+	ue4::FUpGunChatMessage message;
+	ZeroMemory(&message, sizeof(message));
+
+	message.Message = Message;
+	message.Room = roomId;
+	message.Sender = (ue4::AUpGunBasePlayerState*)PlayerState.get_address();
+	message.SenderType = senderType;
+
+	this->ProcessEvent(Function, &message);
 }
 
 upgun::UObject upgun::GameplayStatics::SpawnObject(UObject Object, UObject Outer)

@@ -5,8 +5,6 @@ upgun::ue4::UTexture2D* upgun::ue4::KismetRenderingLibrary::ImportFileAsTexture2
 {
 	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetRenderingLibrary.ImportFileAsTexture2D", true);
 
-
-
 	UKismetRenderingLibrary_ImportFileAsTexture2D_Params params;
 
 	upgun::ReflectedObject World = Game::GetSingleton().GetWorld();
@@ -23,7 +21,7 @@ upgun::ue4::FName upgun::ue4::KismetStringLibrary::StringToName(const std::wstri
 	static upgun::UObject Function = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetStringLibrary.Conv_StringToName");
 
 
-		UKismetStringLibrary_Conv_StringToName_Params params;
+	UKismetStringLibrary_Conv_StringToName_Params params = { 0 };
 
 		params.inString = String.c_str();
 
@@ -73,7 +71,9 @@ upgun::ue4::FString upgun::ue4::KismetTextLibrary::TextToString(FText inText)
 	struct {
 		FText text;
 		FString ReturnValue;
-	} params;
+	} params = { 0 };
+
+	ZeroMemory(&params, sizeof(params));
 
 	params.text = inText;
 
@@ -84,23 +84,21 @@ upgun::ue4::FString upgun::ue4::KismetTextLibrary::TextToString(FText inText)
 
 void upgun::ue4::KismetSystemLibrary::ExecuteConsoleCommand(FString Command)
 {
+	if (!helpers::IsConsoleBuilt())
+		helpers::BuildUE4Console();
+
+	if (!helpers::IsCheatManagerBuilt())
+		helpers::BuildUE4CheatMananager();
+
 	upgun::UWorld world = Game::GetSingleton().GetWorld();
 
 	static upgun::UObject FunctionObject = Game::GetSingleton().GetObjects().find(L"Function /Script/Engine.KismetSystemLibrary.ExecuteConsoleCommand");
 
-	ue4::UFunction* Function = reinterpret_cast<ue4::UFunction*>(FunctionObject.get_address());
-
-	auto flags = Function->FunctionFlags;
-
-	Function->FunctionFlags |= 0x400;
-
 	UKismetSystemLibrary_ExecuteConsoleCommand_Params params;
+	ZeroMemory(&params, sizeof(params));
 	params.WorldContextObject = reinterpret_cast<ue4::UObject*>(world.get_address());
-	params.Command = &Command;
+	params.Command = Command;
 	params.SpecificPlayer = nullptr;
 
-
-	//upgun::Game::GetSingleton().get_kismet_system_library().ProcessEvent(FunctionObject, &params);
-
-	Function->FunctionFlags = flags;
+	KismetSystemLibrary::StaticClass()->ProcessEvent(FunctionObject, &params);
 }
